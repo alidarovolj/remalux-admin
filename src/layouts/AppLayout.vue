@@ -15,6 +15,7 @@ import {
   TagIcon,
   UsersIcon,
   XMarkIcon,
+    HomeModernIcon
 } from '@heroicons/vue/24/outline'
 import {RouterLink, useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
@@ -39,6 +40,7 @@ const navigation = [
       {name: 'Категории', href: '/news/categories', icon: ChatBubbleLeftIcon, alias: 'Brands', children: []},
     ]
   },
+  {name: 'Контакты', href: '/contacts', icon: HomeModernIcon, alias: 'Contacts', children: []},
   // {name: 'Статистика', href: '#', icon: ChartPieIcon, alias: 'Statistics', children: []},
 ]
 // const teams = [

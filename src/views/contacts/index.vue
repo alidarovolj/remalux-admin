@@ -3,15 +3,15 @@ import {onMounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {storeToRefs} from "pinia";
 import {useModalsStore} from "@/stores/modals.js";
-import {useIdeasStore} from "@/stores/ideas.js";
 import TableComponent from "@/components/TableComponent.vue";
+import {useContactsStore} from "@/stores/contacts.js";
 
 const route = useRoute();
 const router = useRouter();
 const modals = useModalsStore()
 
-const ideas = useIdeasStore()
-const {ideasListWithPG} = storeToRefs(ideas)
+const contacts = useContactsStore()
+const { contactsList } = storeToRefs(contacts)
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
@@ -36,19 +36,13 @@ watch([page, perPage], updateQueryParams, {deep: true});
 
 const fetchData = async () => {
   try {
-    await ideas.getIdeasListWithPG()
+    await contacts.getContacts()
   } catch (error) {
     console.error(error);
   }
 };
 
 onMounted(fetchData);
-
-watch([page, perPage], fetchData);
-
-watch(route.query, async () => {
-  await ideas.getIdeasListWithPG(route.query.page, route.query.perPage)
-});
 </script>
 
 <template>
@@ -57,24 +51,24 @@ watch(route.query, async () => {
       <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
           <h1 class="text-2xl font-semibold leading-6 text-gray-900">
-            Идеи
+            Контакты
           </h1>
           <p class="mt-2 text-sm text-gray-700">
-            Список всех идей вашей компании, включая их названия, описания и категории.
+            Список всех контактов компании.
           </p>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <RouterLink
-              to="/ideas/create"
+              to="/contacts/create"
               type="button"
               class="block rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
-            Добавить идею
+            Добавить контакт
           </RouterLink>
         </div>
       </div>
       <TableComponent
           :tableData="tableData"
-          :fetchedData="ideasListWithPG"
+          :fetchedData="contactsList"
           :remove-item="true"
           :edit="true"
           @editValue="(data) => router.push(`/ideas/edit/${data.id}`)"

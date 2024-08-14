@@ -17,12 +17,24 @@ import newsCreate from "@/views/news/create/index.vue";
 import newsEdit from "@/views/news/edit/index.vue";
 import ideasEdit from "@/views/ideas/edit/index.vue";
 import newsCategories from "@/views/news/categories/index.vue";
+import contactsView from "@/views/contacts/index.vue";
+import contactsCreate from "@/views/contacts/create/index.vue"
 
 const routes = [
     {
         path: '/login',
         name: "Login",
         component: loginView
+    },
+    {
+        path: '/contacts',
+        name: "Contacts",
+        component: contactsView
+    },
+    {
+        path: '/contacts/create',
+        name: "CreateContacts",
+        component: contactsCreate
     },
     {
         path: '/',

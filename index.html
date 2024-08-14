@@ -1,13 +1,23 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8"/>
+    <link rel="icon" type="image/svg+xml" href="/vite.svg"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Vite + Vue</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+</head>
+<body>
+<div id="app"></div>
+<script type="module" src="/src/main.js"></script>
+<script async
+        src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=1abcd0bf-59be-4a9a-8721-eb1c7919924b&suggest_apikey=32f1a6de-cbcd-47e3-875d-10e4c212ef50&mode=debug&load=package.full&onload=initYandexMaps"></script>
+<script>
+    window.ymapsReady = new Promise((resolve) => {
+        function initYandexMaps() {
+            resolve(window.ymaps);
+        }
+        window.initYandexMaps = initYandexMaps;
+    });
+</script>
+</body>
 </html>
