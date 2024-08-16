@@ -13,6 +13,12 @@ export default {
       searchControl: null,
     };
   },
+  props: {
+    location: {
+      type: Object,
+      required: true,
+    },
+  },
   mounted() {
     window.ymapsReady.then((ymaps) => {
       this.initMap(ymaps);
@@ -24,7 +30,7 @@ export default {
     initMap(ymaps) {
       ymaps.ready(() => {
         this.map = new ymaps.Map('map', {
-          center: [43.273564, 76.914851],
+          center: this.$props.location ? [this.$props.location.latitude, this.$props.location.longitude] : [43.273564, 76.914851],
           zoom: 10,
           controls: ['zoomControl', 'searchControl'],
         });

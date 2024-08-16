@@ -18,7 +18,8 @@ import newsEdit from "@/views/news/edit/index.vue";
 import ideasEdit from "@/views/ideas/edit/index.vue";
 import newsCategories from "@/views/news/categories/index.vue";
 import contactsView from "@/views/contacts/index.vue";
-import contactsCreate from "@/views/contacts/create/index.vue"
+import contactsCreate from "@/views/contacts/create/index.vue";
+import contactsEdit from "@/views/contacts/edit/index.vue";
 
 const routes = [
     {
@@ -35,6 +36,11 @@ const routes = [
         path: '/contacts/create',
         name: "CreateContacts",
         component: contactsCreate
+    },
+    {
+        path: '/contacts/edit/:id',
+        name: "EditContacts",
+        component: contactsEdit
     },
     {
         path: '/',

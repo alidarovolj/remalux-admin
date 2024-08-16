@@ -74,7 +74,7 @@ const createContact = async () => {
 
   try {
     await contacts.createContact(form.value);
-    if(contacts.createdContact) {
+    if (contacts.createdContact) {
       notifications.showNotification("success", "Контакт успешно создан", "Контакт успешно создан, его можно увидеть в списке контактов.");
       await router.push('/contacts');
     }
@@ -109,6 +109,16 @@ const addPhone = () => {
 const fetchData = async () => {
   try {
     await contacts.getCities()
+    await contacts.getDetailContact(route.params.id)
+    form.value.address = contacts.detailContact.data.address
+    form.value.latitude = contacts.detailContact.data.latitude
+    form.value.longitude = contacts.detailContact.data.longitude
+    form.value.main_phone = contacts.detailContact.data.main_phone
+    form.value.main_email = contacts.detailContact.data.main_email
+    form.value.city_id = contacts.detailContact.data.city.id
+    form.value.work_time.weekdays = contacts.detailContact.data.work_time.weekdays
+    form.value.work_time.weekends = contacts.detailContact.data.work_time.weekends
+    form.value.contact_items = contacts.detailContact.data.contact_items
   } catch (error) {
     console.error(error);
   }
@@ -153,7 +163,7 @@ onMounted(async () => {
       Бизнес регион
     </p>
     <div
-        v-if="citiesList"
+        v-if="citiesList && contacts.detailContact"
         :class="{ '!border !border-red-500' : v$.city_id.$error }"
         class="mb-5 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
       <label
@@ -161,20 +171,7 @@ onMounted(async () => {
           class="block text-xs font-medium text-gray-900">
         Город
       </label>
-      <select
-          v-model="form.city_id"
-          :class="{ 'border-red-500' : v$.city_id.$error }"
-          class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-          name="city"
-          id="city">
-        <option :value="null">Выберите город</option>
-        <option
-            v-for="(city, index) of contacts.citiesList"
-            :key="index"
-            :value="city.id">
-          {{ city.title }}
-        </option>
-      </select>
+      <p>{{ contacts.detailContact.data.city.title.ru }}</p>
     </div>
     <p class="font-semibold mb-5">
       Контакты
@@ -410,7 +407,15 @@ onMounted(async () => {
       <p class="font-semibold mb-5">
         Адрес филиала
       </p>
-      <YandexMap @send_data="fillAddress"/>
+      <div v-if="form.latitude && form.longitude">
+        <YandexMap
+            :location="{
+            latitude: form.latitude,
+            longitude: form.longitude
+          }"
+            @send_data="fillAddress"
+        />
+      </div>
       <div class="mb-4 mt-5 text-sm">
         <label
             for="address"

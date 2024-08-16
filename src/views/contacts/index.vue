@@ -11,14 +11,14 @@ const router = useRouter();
 const modals = useModalsStore()
 
 const contacts = useContactsStore()
-const { contactsList } = storeToRefs(contacts)
+const {contactsList} = storeToRefs(contacts)
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
-  {name: "Картинка", fn: "image_url", type: "image"},
-  {name: "Название", fn: "title.ru", type: "string"},
-  {name: "Комната", fn: "room_title.ru", type: "string"},
-  {name: "Тип цвета", fn: "color_title.ru", type: "string"}
+  {name: "Город", fn: "city.title.ru", type: "string"},
+  {name: "Адрес", fn: "address", type: "string"},
+  {name: "Email", fn: "main_email", type: "string"},
+  {name: "Телефон", fn: "main_phone", type: "string"}
 ])
 
 const page = ref(route.query.page || 1);
@@ -71,8 +71,8 @@ onMounted(fetchData);
           :fetchedData="contactsList"
           :remove-item="true"
           :edit="true"
-          @editValue="(data) => router.push(`/ideas/edit/${data.id}`)"
-          @removeItem="(data) => modals.showModal('RemoveIdea', data)"
+          @editValue="(data) => router.push(`/contacts/edit/${data.id}`)"
+          @removeItem="(data) => modals.showModal('RemoveContact', data)"
           @call_to_refresh="fetchData"
       />
     </div>
