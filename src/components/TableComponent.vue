@@ -19,7 +19,7 @@ import {formatDate} from "@/utils/formatDate.js";
 
 const searchValue = ref('')
 
-const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive', 'search', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment']);
+const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive', 'search', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment', 'link']);
 const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem', 'setActive', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment']);
 
 const route = useRoute();
@@ -116,12 +116,13 @@ watch(() => route.query.searchKeyword, () => {
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
             <tr
-                v-for="(item, index) in fetchedData.data.slice().reverse()"
+                v-for="(item, index) in (fetchedData.data && fetchedData.data.length ? fetchedData.data.slice().reverse() : fetchedData.slice().reverse())"
                 :key="index"
-                class="even:bg-gray-50">
+                class="even:bg-gray-50 cursor-pointer">
               <td
                   v-for="(it, ind) in tableData"
                   :key="ind"
+                  @click="link ? router.push('/' + link + '/' + item.id) : null"
                   class="whitespace-nowrap pl-4 py-5 text-sm text-gray-500"
               >
                 <p
@@ -196,7 +197,7 @@ watch(() => route.query.searchKeyword, () => {
               </td>
               <td
                   v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment"
-                  class="pl-4 py-5 relative whitespace-nowrap pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8 flex gap-1">
+                  class="pl-4 py-5 whitespace-nowrap pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8 flex gap-1 relative z-20">
                 <p
                     v-if="edit"
                     @click="emit('editValue', item)"

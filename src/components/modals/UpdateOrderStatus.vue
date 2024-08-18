@@ -28,6 +28,7 @@ const updateStatus = async () => {
   if (orders.updatedStatus !== false) {
     notifications.showNotification("success", "Успешно", "Статус заказа успешно обновлен");
     await orders.getOrders()
+    await orders.getOrdersDetail(modals.modal.modalData.id)
     modals.modal.show = false;
   } else {
     notifications.showNotification("error", "Ошибка", orders.updatedStatus.message);

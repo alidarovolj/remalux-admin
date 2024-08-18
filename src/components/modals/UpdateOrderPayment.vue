@@ -26,8 +26,9 @@ const setPayStatus = async () => {
 
   await orders.setPaymentStatus(modals.modal.modalData.id, form.value)
   if (orders.paymentStatus !== false) {
-    notifications.showNotification("success", "Пользователь успешно указан администратором!", "Пользователь успешно указан администратором, его можно увидеть в списке администраторов.");
+    notifications.showNotification("success", "Успешно", "Статус оплаты успешно обновлен");
     await orders.getOrders()
+    await orders.getOrdersDetail(modals.modal.modalData.id)
     modals.modal.show = false;
   } else {
     notifications.showNotification("error", "Ошибка", orders.paymentStatus.message);

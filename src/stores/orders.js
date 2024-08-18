@@ -8,6 +8,7 @@ export const useOrdersStore = defineStore('orders', () => {
     const ordersList = ref(null);
     const updatedStatus = ref(null);
     const paymentStatus = ref(null);
+    const ordersDetail = ref(null);
     const notifications = useNotificationStore();
     const route = useRoute();
 
@@ -15,11 +16,30 @@ export const useOrdersStore = defineStore('orders', () => {
         ordersList,
         updatedStatus,
         paymentStatus,
+        ordersDetail,
         async getOrders() {
             try {
                 const response = await api(`/api/admin/orders/`, "GET", {}, route.query);
                 const data = response.data;
                 ordersList.value = data;
+            } catch (e) {
+                if (e.response) {
+                    if (e.response.status !== 500) {
+                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
+                    } else {
+                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
+                    }
+                } else {
+                    console.error(e);
+                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
+                }
+            }
+        },
+        async getOrdersDetail(id) {
+            try {
+                const response = await api(`/api/admin/orders/${id}`, "GET", {}, route.query);
+                const data = response.data;
+                ordersDetail.value = data;
             } catch (e) {
                 if (e.response) {
                     if (e.response.status !== 500) {

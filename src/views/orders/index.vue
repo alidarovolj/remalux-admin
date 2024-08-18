@@ -61,6 +61,7 @@ onMounted(fetchData);
       <TableComponent
           :tableData="tableData"
           :fetchedData="ordersList"
+          link="orders"
           :update-order-status="true"
           :update-order-payment="true"
           @call_to_refresh="fetchData"

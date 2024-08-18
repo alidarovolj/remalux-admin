@@ -21,6 +21,7 @@ import contactsView from "@/views/contacts/index.vue";
 import contactsCreate from "@/views/contacts/create/index.vue";
 import contactsEdit from "@/views/contacts/edit/index.vue";
 import ordersView from "@/views/orders/index.vue";
+import ordersDetail from "@/views/orders/[id]/index.vue";
 
 const routes = [
     {
@@ -32,6 +33,11 @@ const routes = [
         path: '/orders',
         name: "Orders",
         component: ordersView
+    },
+    {
+        path: '/orders/:id',
+        name: "OrdersDetail",
+        component: ordersDetail
     },
     {
         path: '/contacts',
