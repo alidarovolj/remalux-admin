@@ -138,7 +138,7 @@ const fetchData = async () => {
     form.value.description = products.detailProductResult.description;
     form.value.image_url = products.detailProductResult.image_url;
     products.detailProductResult.product_variants.forEach(variant => {
-      form.value.product_variants.push(variant.id);
+      form.value.product_variants.push(variant.value);
     });
     form.value.category_id = products.detailProductResult.category.id;
     form.value.article = products.detailProductResult.article;

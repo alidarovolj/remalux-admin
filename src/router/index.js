@@ -20,12 +20,18 @@ import newsCategories from "@/views/news/categories/index.vue";
 import contactsView from "@/views/contacts/index.vue";
 import contactsCreate from "@/views/contacts/create/index.vue";
 import contactsEdit from "@/views/contacts/edit/index.vue";
+import ordersView from "@/views/orders/index.vue";
 
 const routes = [
     {
         path: '/login',
         name: "Login",
         component: loginView
+    },
+    {
+        path: '/orders',
+        name: "Orders",
+        component: ordersView
     },
     {
         path: '/contacts',

@@ -19,8 +19,8 @@ import {formatDate} from "@/utils/formatDate.js";
 
 const searchValue = ref('')
 
-const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive', 'search', 'changePrice', 'changeRemains']);
-const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem', 'setActive', 'changePrice', 'changeRemains']);
+const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive', 'search', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment']);
+const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem', 'setActive', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment']);
 
 const route = useRoute();
 const router = useRouter();
@@ -105,7 +105,7 @@ watch(() => route.query.searchKeyword, () => {
                 {{ item.name }}
               </th>
               <th
-                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains"
+                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment"
                   scope="col"
                   class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
                 <p>
@@ -133,6 +133,29 @@ watch(() => route.query.searchKeyword, () => {
                     class="text-red-500">
                   Нет данных
                 </p>
+                <p
+                    v-else-if="it.type === 'borders'"
+                    class="bg-green-100 text-green-500 w-max px-4 py-2 rounded-xl uppercase">
+                  {{ getNestedProperty(item, it.fn) }}
+                </p>
+                <div
+                    v-else-if="it.type === 'array'"
+                    class="bg-green-100 text-green-500 w-max px-4 py-2 rounded-xl">
+                  <p
+                      v-for="(arrItem, arrIndex) of getNestedProperty(item, it.fn)"
+                      :key="arrIndex">
+                    {{ arrItem }}
+                  </p>
+                </div>
+                <div
+                    v-else-if="it.type === 'product_array'"
+                    class="w-max">
+                  <p
+                      v-for="(arrItem, arrIndex) of getNestedProperty(item, it.fn)"
+                      :key="arrIndex">
+                    {{ arrItem.product_name.ru }} ({{ arrItem.quantity }} шт.)
+                  </p>
+                </div>
                 <div
                     v-else-if="it.type === 'boolean'"
                     class="text-xs"
@@ -140,12 +163,12 @@ watch(() => route.query.searchKeyword, () => {
                   <p
                       v-if="getNestedProperty(item, it.fn)"
                       class="bg-green-100 text-green-500 w-max px-4 py-2 rounded-xl">
-                    Активирован
+                    Да
                   </p>
                   <p
                       v-else
                       class="bg-red-100 text-red-500 w-max px-4 py-2 rounded-xl">
-                    Деактивирован
+                    Нет
                   </p>
                 </div>
                 <div
@@ -172,7 +195,7 @@ watch(() => route.query.searchKeyword, () => {
                 </div>
               </td>
               <td
-                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains"
+                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment"
                   class="pl-4 py-5 relative whitespace-nowrap pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8 flex gap-1">
                 <p
                     v-if="edit"
@@ -217,6 +240,18 @@ watch(() => route.query.searchKeyword, () => {
                     @click="emit('removeItem', item)"
                     class="text-mainColor cursor-pointer w-max">
                   <TrashIcon class="w-5 h-5"/>
+                </p>
+                <p
+                    v-if="updateOrderStatus"
+                    @click="emit('updateOrderStatus', item)"
+                    class="text-mainColor cursor-pointer w-max">
+                  <CheckIcon class="w-5 h-5"/>
+                </p>
+                <p
+                    v-if="updateOrderPayment"
+                    @click="emit('updateOrderPayment', item)"
+                    class="text-mainColor cursor-pointer w-max">
+                  <CircleStackIcon class="w-5 h-5"/>
                 </p>
               </td>
             </tr>

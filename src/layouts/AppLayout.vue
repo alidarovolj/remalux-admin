@@ -15,6 +15,7 @@ import {
   TagIcon,
   UsersIcon,
   XMarkIcon,
+    TruckIcon,
     HomeModernIcon
 } from '@heroicons/vue/24/outline'
 import {RouterLink, useRoute} from "vue-router";
@@ -26,6 +27,7 @@ const route = useRoute()
 const navigation = [
   {name: 'Главная панель', href: '/', icon: HomeIcon, alias: 'Dashboard', children: []},
   {name: 'Пользователи', href: '/users', icon: UsersIcon, alias: 'Users', children: []},
+  {name: 'Заказы', href: '/orders', icon: TruckIcon, alias: 'Orders', children: []},
   {
     name: 'Продукты', href: '/products', icon: FolderIcon, alias: 'Products', children: [
       {name: 'Вариации', href: '/products/variants', icon: CircleStackIcon, alias: 'ProductsVariants', children: []},
