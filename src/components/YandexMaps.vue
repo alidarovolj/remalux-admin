@@ -11,6 +11,7 @@ export default {
     return {
       map: null,
       searchControl: null,
+      placemark: null,
     };
   },
   props: {
@@ -47,6 +48,26 @@ export default {
             this.$emit('send_data', { address, longitude, latitude });
           }).catch((error) => {
             console.error('Error retrieving search result:', error);
+          });
+        });
+
+        this.map.events.add('click', (e) => {
+          const coords = e.get('coords');
+          ymaps.geocode(coords).then((res) => {
+            const firstGeoObject = res.geoObjects.get(0);
+            const address = firstGeoObject.getAddressLine();
+            if (this.placemark) {
+              this.placemark.geometry.setCoordinates(coords);
+            } else {
+              this.placemark = new ymaps.Placemark(coords, {}, {
+                preset: 'islands#icon',
+                iconColor: '#0095b6'
+              });
+              this.map.geoObjects.add(this.placemark);
+            }
+            this.$emit('send_data', { latitude: coords[0], longitude: coords[1], address });
+          }).catch((error) => {
+            console.error('Error retrieving address:', error);
           });
         });
       });
