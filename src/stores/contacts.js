@@ -25,16 +25,7 @@ export const useContactsStore = defineStore('contacts', () => {
                 const data = response.data;
                 contactsList.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async getDetailContact(id) {
@@ -43,16 +34,7 @@ export const useContactsStore = defineStore('contacts', () => {
                 const data = response.data;
                 detailContact.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async getCities() {
@@ -61,16 +43,7 @@ export const useContactsStore = defineStore('contacts', () => {
                 const data = response.data;
                 citiesList.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async createContact(body) {
@@ -81,16 +54,7 @@ export const useContactsStore = defineStore('contacts', () => {
                 const data = response.data;
                 createdContact.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async removeContact(id) {
@@ -99,16 +63,7 @@ export const useContactsStore = defineStore('contacts', () => {
                 const data = response.data;
                 removedContact.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
     };

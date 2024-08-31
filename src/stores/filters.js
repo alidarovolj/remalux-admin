@@ -31,16 +31,7 @@ export const useFiltersStore = defineStore('filters', () => {
                 const data = response.data;
                 filtersList.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async getFiltersListWithPG() {
@@ -49,16 +40,7 @@ export const useFiltersStore = defineStore('filters', () => {
                 const data = response.data;
                 filtersListWithPG.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async getFiltersListByCategory(id) {
@@ -67,16 +49,7 @@ export const useFiltersStore = defineStore('filters', () => {
                 const data = response.data;
                 filtersListByCategory.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async createFilter(form) {
@@ -87,16 +60,7 @@ export const useFiltersStore = defineStore('filters', () => {
                 const data = response.data;
                 createdFilter.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async removeFilter(id) {
@@ -105,16 +69,7 @@ export const useFiltersStore = defineStore('filters', () => {
                 const data = response.data;
                 removedFilter.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async getFilterValues(id, value) {
@@ -123,16 +78,7 @@ export const useFiltersStore = defineStore('filters', () => {
                 const data = response.data;
                 filterValues.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async getDetailFilter(id) {
@@ -141,16 +87,7 @@ export const useFiltersStore = defineStore('filters', () => {
                 const data = response.data;
                 filterDetail.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async editFilter(id, value) {
@@ -161,16 +98,7 @@ export const useFiltersStore = defineStore('filters', () => {
                 const data = response.data;
                 editedFilter.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
     };

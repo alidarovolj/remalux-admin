@@ -39,20 +39,20 @@ export async function api(url, method, options = {}, query = {}) {
     });
 
     if (options.body) {
-        config.data = JSON.parse(options.body);
+        config.data = options.body; // Directly using options.body, assuming it's already parsed or properly formatted
     }
 
     try {
         const response = await axios(config);
-        return response;
+        return response.data; // Return only the data to match the first function's behavior
     } catch (error) {
-        if (error.response && error.response.status === 401 || error.response.status === 403) {
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
             notifications.showNotification("error", "Токен не получен или истек", "Пожалуйста, авторизуйтесь снова");
             localStorage.removeItem("token");
             router.push('/login');
         } else {
-            console.error(error);
-            throw error;
+            console.error("API Error:", error.response || error.message);
+            throw new Error(error.response?.data?.message || 'Request failed');
         }
     }
 }

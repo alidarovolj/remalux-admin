@@ -32,16 +32,7 @@ export const useNewsStore = defineStore('news', () => {
                 const data = response.data;
                 newsListWithPG.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async getDetailNews(id) {
@@ -50,16 +41,7 @@ export const useNewsStore = defineStore('news', () => {
                 const data = response.data;
                 detailNews.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async getNewsCategories() {
@@ -68,16 +50,7 @@ export const useNewsStore = defineStore('news', () => {
                 const data = response.data;
                 newsCategories.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async createNews(form) {
@@ -88,16 +61,7 @@ export const useNewsStore = defineStore('news', () => {
                 const data = response.data;
                 createdNews.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async createNewsCategory(form) {
@@ -108,16 +72,7 @@ export const useNewsStore = defineStore('news', () => {
                 const data = response.data;
                 createdNewsCategory.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async editNews(id, form) {
@@ -128,16 +83,7 @@ export const useNewsStore = defineStore('news', () => {
                 const data = response.data;
                 editedNews.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async editNewsCategory(id, form) {
@@ -148,16 +94,7 @@ export const useNewsStore = defineStore('news', () => {
                 const data = response.data;
                 editedNewsCategory.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async removeNews(id, form) {
@@ -168,16 +105,7 @@ export const useNewsStore = defineStore('news', () => {
                 const data = response.data;
                 removedNews.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async removeNewsCategory(id, form) {
@@ -188,16 +116,7 @@ export const useNewsStore = defineStore('news', () => {
                 const data = response.data;
                 removedNewsCategory.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         }
     };

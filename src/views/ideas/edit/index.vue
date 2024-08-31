@@ -8,13 +8,14 @@ import {
   PlusCircleIcon,
   TrashIcon,
 } from '@heroicons/vue/24/outline/index.js';
-import { computed, nextTick, onMounted, ref } from 'vue';
+import {computed, nextTick, onMounted, ref, watch} from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required } from '@vuelidate/validators';
 import UploadImage from '@/components/UploadImage.vue';
 import { useIdeasStore } from '@/stores/ideas.js';
 import { useNotificationStore } from '@/stores/notifications.js';
 import { useRoute, useRouter } from 'vue-router';
+import {useColorsStore} from "@/stores/colors.js";
 
 const idea = useIdeasStore();
 const notifications = useNotificationStore();
@@ -23,6 +24,9 @@ const type = ref(null);
 const router = useRouter();
 const route = useRoute();
 const selectedColor = ref(null);
+const colorForArray = ref(null);
+const colors = useColorsStore()
+const arrayOfColors = ref([])
 
 const form = ref({
   title: {
@@ -30,7 +34,13 @@ const form = ref({
     kz: null,
     en: null,
   },
+  description: {
+    ru: null,
+    kz: null,
+    en: null
+  },
   idea_color_id: null,
+  color_ids: [],
   room_id: null,
   image_url: null,
   values: [],
@@ -40,6 +50,9 @@ const v$ = useVuelidate(
     {
       title: {
         ru: { required },
+      },
+      description: {
+        ru: {required},
       },
       idea_color_id: { required },
       room_id: { required },
@@ -132,22 +145,28 @@ const editIdea = async () => {
   }
 
   await idea.editIdea(route.params.id, form.value);
-  if (idea.createdIdea !== false) {
+  if (idea.createdIdea) {
     await idea.getIdeasListWithPG();
     notifications.showNotification('success', 'Идея успешно создана!', 'Идея успешно создана, ее можно увидеть в списке идей.');
-    router.push('/ideas');
+    await router.push('/ideas');
   } else {
     notifications.showNotification('error', 'Ошибка создания идеи!', 'Попробуйте позже.');
   }
 };
+
+watch(() => selectedColor.value, async (newValue) => {
+  // form.value.color_ids = []
+  // arrayOfColors.value = []
+  await colors.getColors(selectedColor.value.id)
+});
 
 const fetchData = async () => {
   try {
     await idea.getIdeasRoomsList();
     await idea.getIdeasColorsList();
     await idea.getDetailIdea(route.params.id);
-    form.value.values = idea.detailIdea.data.values;
-    form.value.idea_color_id = idea.detailIdea.data.color_title.id;
+    form.value.values = idea.detailIdea.values;
+    form.value.idea_color_id = idea.detailIdea.color_title.id;
     let obj = {
       hex: null,
       id: null,
@@ -157,17 +176,22 @@ const fetchData = async () => {
         en: null,
       }
     }
-    obj.hex = idea.detailIdea.data.color_title.hex;
-    obj.id = idea.detailIdea.data.color_title.id;
-    obj.title.ru = idea.detailIdea.data.color_title.ru;
-    obj.title.kz = idea.detailIdea.data.color_title.kz;
-    obj.title.en = idea.detailIdea.data.color_title.en;
+    obj.hex = idea.detailIdea.color_title.hex;
+    obj.id = idea.detailIdea.color_title.id;
+    obj.title.ru = idea.detailIdea.color_title.ru;
+    obj.title.kz = idea.detailIdea.color_title.kz;
+    obj.title.en = idea.detailIdea.color_title.en;
     selectedColor.value = obj;
-    form.value.room_id = idea.detailIdea.data.room_title.id;
-    form.value.image_url = idea.detailIdea.data.image_url;
-    form.value.title.ru = idea.detailIdea.data.title;
-    form.value.title.kz = idea.detailIdea.data.title_kz;
-    form.value.title.en = idea.detailIdea.data.title_en;
+    form.value.room_id = idea.detailIdea.room_title.id;
+    form.value.image_url = idea.detailIdea.image_url;
+    form.value.title.ru = idea.detailIdea.title.ru;
+    form.value.title.kz = idea.detailIdea.title.kz;
+    form.value.title.en = idea.detailIdea.title.en;
+    form.value.description.ru = idea.detailIdea.short_description.ru;
+    form.value.description.kz = idea.detailIdea.short_description.kz;
+    form.value.description.en = idea.detailIdea.short_description.en;
+    idea.detailIdea.colors.map((item) => form.value.color_ids.push(item.id));
+    arrayOfColors.value = idea.detailIdea.colors;
   } catch (error) {
     console.error(error);
   }
@@ -250,26 +274,94 @@ onMounted(async () => {
         </div>
       </Listbox>
     </div>
+    <div v-if="colors.colorsList" class="border px-5 py-2 rounded-md text-xs mb-3">
+      <Listbox as="div" class="text-xs" v-model="colorForArray">
+        <p class="mb-1">Выберите рекомендуемые цвета</p>
+        <div class="relative mt-2">
+          <ListboxButton class="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:leading-6">
+            <span v-if="colorForArray" class="flex items-center">
+              <div :class="`h-5 w-5 flex-shrink-0 rounded-full`" :style="{ backgroundColor: colorForArray.hex }"></div>
+              <span class="ml-3 block truncate">{{ colorForArray.title.ru }}</span>
+            </span>
+            <span v-else class="flex items-center">
+              <span class="ml-3 block truncate">Выберите цвет</span>
+            </span>
+            <span class="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+              <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
+            </span>
+          </ListboxButton>
+
+          <transition leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100" leave-to-class="opacity-0">
+            <ListboxOptions class="absolute z-50 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <ListboxOption
+                  as="template"
+                  v-for="(item, index) in colors.colorsList.data"
+                  :key="index"
+                  @click="form.color_ids.push(item.id); arrayOfColors.push(item)"
+                  :value="item"
+                  v-slot="{ active, selected }"
+              >
+                <li :class="[active ? 'bg-indigo-600 text-white' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-3 pr-9']">
+                  <div class="flex items-center">
+                    <div :class="`h-5 w-5 flex-shrink-0 rounded-full`" :style="{ backgroundColor: item.hex }"></div>
+                    <span :class="[selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate']">{{ item.title.ru }}</span>
+                  </div>
+
+                  <span v-if="selected" :class="[active ? 'text-white' : 'text-indigo-600', 'absolute inset-y-0 right-0 flex items-center pr-4']">
+                    <CheckIcon class="h-5 w-5" aria-hidden="true" />
+                  </span>
+                </li>
+              </ListboxOption>
+            </ListboxOptions>
+          </transition>
+        </div>
+      </Listbox>
+      <div class="flex flex-wrap gap-3 mt-2">
+        <div
+            v-for="(item, index) of arrayOfColors"
+            :key="index"
+            class="px-3 py-1 rounded-md text-xs"
+            :style="{ backgroundColor: item.hex }"
+        >
+          {{ item.title.ru }}
+        </div>
+      </div>
+    </div>
     <UploadImage :class="{ 'border border-red-500': v$.image_url.$error }" :preview_image="form.image_url" class="mb-3" @photoUploaded="(event) => form.image_url = event" type="ideas" />
+
     <div class="rounded-md px-3 pb-1.5 pt-2.5 border mb-3">
       <div class="flex gap-3 mb-3 text-sm">
         <p
             @click="currentLanguage = 'ru'"
-            :class="[{ 'bg-mainColor text-white': currentLanguage === 'ru' }, { '!border !border-red-500': v$.title.ru.$error }]"
-            class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer"
-        >
+            :class="[
+                      { 'bg-mainColor text-white': currentLanguage === 'ru' },
+                      { '!border !border-red-500': v$.title.ru.$error }
+                  ]"
+            class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
           Русский
         </p>
-        <p @click="currentLanguage = 'kz'" :class="[{ 'bg-mainColor text-white': currentLanguage === 'kz' }]" class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
+        <p
+            @click="currentLanguage = 'kz'"
+            :class="[{ 'bg-mainColor text-white': currentLanguage === 'kz' }]"
+            class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
           Казахский
         </p>
-        <p @click="currentLanguage = 'en'" :class="[{ 'bg-mainColor text-white': currentLanguage === 'en' }]" class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
+        <p
+            @click="currentLanguage = 'en'"
+            :class="[{ 'bg-mainColor text-white': currentLanguage === 'en' }]"
+            class="bg-gray-200 px-4 py-2 rounded-md cursor-pointer">
           Английский
         </p>
       </div>
       <div v-if="currentLanguage === 'ru'">
-        <div :class="{ '!border !border-red-500': v$.title.ru.$error }" class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
-          <label for="name" class="block text-xs font-medium text-gray-900">Название</label>
+        <div
+            :class="{ '!border !border-red-500': v$.title.ru.$error }"
+            class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+          <label
+              for="name"
+              class="block text-xs font-medium text-gray-900">
+            Название
+          </label>
           <input
               v-model="form.title.ru"
               type="text"
@@ -279,10 +371,32 @@ onMounted(async () => {
               placeholder="Универсальная краска матовая"
           />
         </div>
+        <div
+            :class="{ '!border !border-red-500': v$.description.ru.$error }"
+            class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+          <label
+              for="name"
+              class="block text-xs font-medium text-gray-900">
+            Краткое описание
+          </label>
+          <textarea
+              v-model="form.description.ru"
+              type="text"
+              name="name"
+              id="name"
+              class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              placeholder="Данная краска славится тем, что ее можно использовать на любой поверхности..."
+          />
+        </div>
       </div>
       <div v-else-if="currentLanguage === 'kz'">
-        <div class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
-          <label for="name" class="block text-xs font-medium text-gray-900">Название</label>
+        <div
+            class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+          <label
+              for="name"
+              class="block text-xs font-medium text-gray-900">
+            Название
+          </label>
           <input
               v-model="form.title.kz"
               type="text"
@@ -292,10 +406,31 @@ onMounted(async () => {
               placeholder="Күңгірт әмбебап бояу"
           />
         </div>
+        <div
+            class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+          <label
+              for="name"
+              class="block text-xs font-medium text-gray-900">
+            Краткое описание
+          </label>
+          <textarea
+              v-model="form.description.kz"
+              type="text"
+              name="name"
+              id="name"
+              class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              placeholder="Бұл бояу кез келген бетке қолдануға болатындығымен танымал..."
+          />
+        </div>
       </div>
       <div v-else>
-        <div class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
-          <label for="name" class="block text-xs font-medium text-gray-900">Название</label>
+        <div
+            class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+          <label
+              for="name"
+              class="block text-xs font-medium text-gray-900">
+            Название
+          </label>
           <input
               v-model="form.title.en"
               type="text"
@@ -303,6 +438,22 @@ onMounted(async () => {
               id="name"
               class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
               placeholder="Universal paint matte"
+          />
+        </div>
+        <div
+            class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+          <label
+              for="name"
+              class="block text-xs font-medium text-gray-900">
+            Краткое описание
+          </label>
+          <textarea
+              v-model="form.description.en"
+              type="text"
+              name="name"
+              id="name"
+              class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+              placeholder="This paint is famous for the fact that it can be used on any surface..."
           />
         </div>
       </div>

@@ -15,7 +15,7 @@ const {productVariantsList} = storeToRefs(products)
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
-  {name: "Название", fn: "product.title", type: "string"},
+  {name: "Название", fn: "product.title.ru", type: "string"},
   {name: "Вес (кг.)", fn: "value", type: "string"},
   {name: "Количество", fn: "quantity", type: "string"},
   {name: "Оптовая цена", fn: "prices.wholesale", type: "string"},

@@ -23,16 +23,7 @@ export const useOrdersStore = defineStore('orders', () => {
                 const data = response.data;
                 ordersList.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async getOrdersDetail(id) {
@@ -41,16 +32,7 @@ export const useOrdersStore = defineStore('orders', () => {
                 const data = response.data;
                 ordersDetail.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async updateStatus(id, form) {
@@ -61,16 +43,7 @@ export const useOrdersStore = defineStore('orders', () => {
                 const data = response.data;
                 updatedStatus.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async setPaymentStatus(id, form) {
@@ -81,16 +54,7 @@ export const useOrdersStore = defineStore('orders', () => {
                 const data = response.data;
                 paymentStatus.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         }
     };

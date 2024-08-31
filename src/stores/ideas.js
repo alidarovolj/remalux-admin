@@ -29,34 +29,15 @@ export const useIdeasStore = defineStore('ideas', () => {
                 const data = response.data;
                 ideasListWithPG.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async getDetailIdea(id) {
             try {
                 const response = await api(`/api/admin/ideas/${id}`, "GET", {}, route.query);
-                const data = response.data;
-                detailIdea.value = data;
+                detailIdea.value = response;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async getIdeasRoomsList() {
@@ -65,16 +46,7 @@ export const useIdeasStore = defineStore('ideas', () => {
                 const data = response.data;
                 ideaRooms.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async getIdeasColorsList() {
@@ -83,16 +55,7 @@ export const useIdeasStore = defineStore('ideas', () => {
                 const data = response.data;
                 ideaColors.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async createIdea(form) {
@@ -103,16 +66,8 @@ export const useIdeasStore = defineStore('ideas', () => {
                 const data = response.data;
                 createdIdea.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
+                createdIdea.value = false
             }
         },
         async removeIdea(id) {
@@ -121,16 +76,7 @@ export const useIdeasStore = defineStore('ideas', () => {
                 const data = response.data;
                 removedIdea.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async editIdea(id, form) {
@@ -141,16 +87,7 @@ export const useIdeasStore = defineStore('ideas', () => {
                 const data = response.data;
                 editedIdea.value = data;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
     };
