@@ -5,7 +5,8 @@ import {
   CheckIcon,
   ChevronUpDownIcon,
   PlusCircleIcon,
-  TrashIcon
+  TrashIcon,
+  XMarkIcon
 } from "@heroicons/vue/24/outline/index.js";
 import {computed, nextTick, onMounted, onBeforeUnmount, ref, watch} from "vue";
 import {useVuelidate} from "@vuelidate/core";
@@ -24,7 +25,6 @@ const type = ref(null)
 const router = useRouter()
 const route = useRoute();
 const selectedColor = ref(null);
-const colorForArray = ref(null);
 const colors = useColorsStore()
 const arrayOfColors = ref([])
 const showColorPicker = ref(false)
@@ -282,6 +282,7 @@ onBeforeUnmount(() => {
     <div class="border px-5 py-2 rounded-md text-xs mb-3">
       <div ref="colorPickerContainer">
         <p class="mb-1">Выберите рекомендованные цвета</p>
+        <p class="mb-1 text-red-500">Для поиска по HEX коду, пожалуйста, вводите значение большими буквами</p>
         <div class="relative">
           <input
               v-model="searchColor"
@@ -295,15 +296,18 @@ onBeforeUnmount(() => {
               v-if="showColorPicker && colors.colorsList"
               class="absolute top-full left-0 w-full bg-white z-50 shadow-xl"
           >
-            <div
-                v-for="(item, index) of colors.colorsList.data"
-                :key="index"
-                @click="arrayOfColors.push(item); form.color_ids.push(item.id); showColorPicker = false"
-                class="flex gap-2 p-2 cursor-pointer hover:bg-gray-100 transition-all"
-            >
-              <div class="w-3 h-3" :style="{ backgroundColor: item.hex }"></div>
-              <p>{{ item.title.ru }}</p>
+            <div v-if="colors.colorsList.data.length > 0">
+              <div
+                  v-for="(item, index) of colors.colorsList.data"
+                  :key="index"
+                  @click="arrayOfColors.push(item); form.color_ids.push(item.id); showColorPicker = false"
+                  class="flex gap-2 p-2 cursor-pointer hover:bg-gray-100 transition-all"
+              >
+                <div class="w-3 h-3" :style="{ backgroundColor: item.hex }"></div>
+                <p>{{ item.title.ru }}</p>
+              </div>
             </div>
+            <p v-else>Результаты не найдены</p>
           </div>
         </div>
       </div>
@@ -311,10 +315,14 @@ onBeforeUnmount(() => {
         <div
             v-for="(item, index) of arrayOfColors"
             :key="index"
-            class="px-3 py-1 rounded-md text-xs"
+            class="px-3 py-1 rounded-md text-xs flex items-center gap-2"
             :style="{ backgroundColor: item.hex }"
         >
-          {{ item.title.ru }}
+          <p>{{ item.title.ru }}</p>
+          <XMarkIcon
+              @click="arrayOfColors.splice(index, 1); form.color_ids.splice(index, 1)"
+              class="w-5 h-5 cursor-pointer"
+          />
         </div>
       </div>
     </div>

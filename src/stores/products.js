@@ -8,6 +8,7 @@ import {useRoute} from "vue-router";
 export const useProductsStore = defineStore('products', () => {
     const route = useRoute();
     const productsList = ref(null);
+    const productVariantsListAll = ref(null);
     const createdProduct = ref(null);
     const editedProduct = ref(null);
     const detailProductResult = ref(null);
@@ -20,6 +21,7 @@ export const useProductsStore = defineStore('products', () => {
 
     return {
         productsList,
+        productVariantsListAll,
         createdProduct,
         editedProduct,
         detailProductResult,
@@ -37,11 +39,25 @@ export const useProductsStore = defineStore('products', () => {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
-        async getProductVariantsList() {
+        async getProductVariantsList(search) {
             try {
-                const response = await api(`/api/admin/product-variants/`, "GET", {}, route.query);
-                
-                productVariantsList.value = response;
+                if(!search) {
+                    const response = await api(`/api/admin/product-variants/`, "GET", {}, route.query);
+                    productVariantsList.value = response;
+                } else {
+                    const response = await api(`/api/admin/product-variants/`, "GET", {}, {
+                        'searchKeyword': search
+                    });
+                    productVariantsList.value = response;
+                }
+            } catch (e) {
+                notifications.showNotification("error", "Произошла ошибка", e);
+            }
+        },
+        async getProductVariantsListAll(search) {
+            try {
+                const response = await api(`/api/admin/product-variants/all`, "GET", {}, route.query);
+                productVariantsListAll.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

@@ -7,6 +7,7 @@ import {useRoute} from "vue-router";
 export const useUsersStore = defineStore('users', () => {
     const userProfile = ref(null);
     const userList = ref(null);
+    const userListAll = ref(null);
     const createdUser = ref(null);
     const editedUser = ref(null);
     const checkAdmin = ref(null);
@@ -19,6 +20,7 @@ export const useUsersStore = defineStore('users', () => {
     return {
         userProfile,
         userList,
+        userListAll,
         createdUser,
         editedUser,
         checkAdmin,
@@ -50,6 +52,15 @@ export const useUsersStore = defineStore('users', () => {
                 const response = await api(`/api/admin/users`, "GET", {}, route.query);
                 
                 userList.value = response;
+            } catch (e) {
+                notifications.showNotification("error", "Произошла ошибка", e);
+            }
+        },
+        async getUserListAll() {
+            try {
+                const response = await api(`/api/admin/users/all`, "GET", {}, route.query);
+
+                userListAll.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

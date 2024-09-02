@@ -11,6 +11,7 @@ export const useNewsStore = defineStore('news', () => {
     const editedNews = ref(null);
     const detailNews = ref(null);
     const removedNews = ref(null);
+    const newsSubscribers = ref(null);
     const createdNewsCategory = ref(null);
     const editedNewsCategory = ref(null);
     const removedNewsCategory = ref(null);
@@ -20,6 +21,7 @@ export const useNewsStore = defineStore('news', () => {
     return {
         newsListWithPG,
         newsCategories,
+        newsSubscribers,
         createdNews,
         editedNews,
         detailNews,
@@ -31,6 +33,15 @@ export const useNewsStore = defineStore('news', () => {
                 const response = await api(`/api/admin/news`, "GET", {}, route.query);
                 
                 newsListWithPG.value = response;
+            } catch (e) {
+                notifications.showNotification("error", "Произошла ошибка", e);
+            }
+        },
+        async getNewsSubscribers() {
+            try {
+                const response = await api(`/api/admin/subscribers`, "GET", {}, route.query);
+
+                newsSubscribers.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

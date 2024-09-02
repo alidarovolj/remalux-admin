@@ -49,7 +49,7 @@ onMounted(fetchData);
 <template>
   <div>
     <StatsBoard/>
-    <div class="px-4">
+    <div>
       <TableComponent
           :tableData="tableData"
           :fetchedData="ordersList"

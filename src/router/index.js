@@ -22,12 +22,24 @@ import contactsCreate from "@/views/contacts/create/index.vue";
 import contactsEdit from "@/views/contacts/edit/index.vue";
 import ordersView from "@/views/orders/index.vue";
 import ordersDetail from "@/views/orders/[id]/index.vue";
+import discountsView from "@/views/discounts/index.vue";
+import subscriptionsView from "@/views/news_subscribers/index.vue";
 
 const routes = [
     {
         path: '/login',
         name: "Login",
         component: loginView
+    },
+    {
+        path: '/discounts',
+        name: "Discounts",
+        component: discountsView
+    },
+    {
+        path: '/news/subscriptions',
+        name: "Subscriptions",
+        component: subscriptionsView
     },
     {
         path: '/orders',

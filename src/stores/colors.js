@@ -16,7 +16,7 @@ export const useColorsStore = defineStore("colors", () => {
                 console.log(search)
                 if(search.length >= 3) {
                     const response = await api(`/api/colors`, "GET", {}, {
-                        'searchKeyword': search.toUpperCase()
+                        'searchKeyword': search
                     });
 
                     colorsList.value = response;
