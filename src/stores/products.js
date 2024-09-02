@@ -31,8 +31,8 @@ export const useProductsStore = defineStore('products', () => {
         async getProductsList() {
             try {
                 const response = await api(`/api/admin/products/`, "GET", {}, route.query);
-                const data = response.data;
-                productsList.value = data;
+                
+                productsList.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -40,8 +40,8 @@ export const useProductsStore = defineStore('products', () => {
         async getProductVariantsList() {
             try {
                 const response = await api(`/api/admin/product-variants/`, "GET", {}, route.query);
-                const data = response.data;
-                productVariantsList.value = data;
+                
+                productVariantsList.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -51,43 +51,19 @@ export const useProductsStore = defineStore('products', () => {
                 const response = await api(`api/admin/products`, "POST", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                createdProduct.value = data;
+                
+                createdProduct.value = response;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                        createdProduct.value = false;
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                        createdProduct.value = false;
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                    createdProduct.value = false;
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async detailProduct(id, form) {
             try {
                 const response = await api(`api/admin/products/${id}`, "GET");
-                const data = response.data;
-                detailProductResult.value = data;
+                
+                detailProductResult.value = response;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                        detailProductResult.value = false;
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                        detailProductResult.value = false;
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                    detailProductResult.value = false;
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async editProduct(id, form) {
@@ -95,22 +71,10 @@ export const useProductsStore = defineStore('products', () => {
                 const response = await api(`api/admin/products/${id}`, "PUT", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                editedProduct.value = data;
+                
+                editedProduct.value = response;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                        editedProduct.value = false;
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                        editedProduct.value = false;
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                    editedProduct.value = false;
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async setActive(id, form) {
@@ -118,43 +82,19 @@ export const useProductsStore = defineStore('products', () => {
                 const response = await api(`api/admin/products/${id}`, "PATCH", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                activeResult.value = data;
+                
+                activeResult.value = response;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                        activeResult.value = false;
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                        activeResult.value = false;
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                    activeResult.value = false;
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async removeProduct(id) {
             try {
                 const response = await api(`api/admin/products/${id}`, "DELETE", {}, route.query);
-                const data = response.data;
-                removedProduct.value = data;
+                
+                removedProduct.value = response;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                        removedProduct.value = false;
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                        removedProduct.value = false;
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                    removedProduct.value = false;
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async changePriceVariant(id, form) {
@@ -162,22 +102,10 @@ export const useProductsStore = defineStore('products', () => {
                 const response = await api(`api/admin/product-variants/${id}/prices`, "PATCH", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                changedVariantPrice.value = data;
+                
+                changedVariantPrice.value = response;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                        changedVariantPrice.value = false;
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                        changedVariantPrice.value = false;
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                    changedVariantPrice.value = false;
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async changeRemainsVariant(id, form) {
@@ -185,22 +113,10 @@ export const useProductsStore = defineStore('products', () => {
                 const response = await api(`api/admin/product-variants/${id}/remains`, "PATCH", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                changedVariantRemains.value = data;
+                
+                changedVariantRemains.value = response;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                        changedVariantRemains.value = false;
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                        changedVariantRemains.value = false;
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                    changedVariantRemains.value = false;
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
     };

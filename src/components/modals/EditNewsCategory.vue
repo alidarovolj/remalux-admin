@@ -37,15 +37,19 @@ const editNews = async () => {
     notifications.showNotification("error", "Данные не заполнены", "Проверьте правильность введенных данных и попробуйте снова.");
     return;
   }
-  await news.editNewsCategory(modals.modal.modalData.id, form.value);
-  if (news.editedNewsCategory !== false) {
-    await news.getNewsCategories()
-    notifications.showNotification("success", "Новостная категория успешно отредактирована!", "Новостная категория успешно отредактирована, ее можно увидеть в списке новостных категорий.");
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка редактирования новостной категории!", "Попробуйте позже.");
+
+  try {
+    await news.editNewsCategory(modals.modal.modalData.id, form.value);
+    if (news.editedNewsCategory) {
+      await news.getNewsCategories()
+      notifications.showNotification("success", "Новостная категория успешно отредактирована!", "Новостная категория успешно отредактирована, ее можно увидеть в списке новостных категорий.");
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false;
 };
 
 onMounted(() => {

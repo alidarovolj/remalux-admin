@@ -41,15 +41,19 @@ const editFilter = async () => {
     loading.value = false;
     return;
   }
-  await filters.editFilter(modals.modal.modalData.id, formEdit.value);
-  if (filters.editedFilter !== false) {
-    notifications.showNotification("success", "Фильтр успешно отредактирован!", "Фильтр успешно отредактирован, его можно увидеть в списке фильтров.");
-    await filters.getFiltersListWithPG()
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка редактирования фильтра!", filters.editedFilter.message);
+
+  try {
+    await filters.editFilter(modals.modal.modalData.id, formEdit.value);
+    if (filters.editedFilter) {
+      notifications.showNotification("success", "Фильтр успешно отредактирован!", "Фильтр успешно отредактирован, его можно увидеть в списке фильтров.");
+      await filters.getFiltersListWithPG()
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false;
 };
 
 onMounted(async () => {

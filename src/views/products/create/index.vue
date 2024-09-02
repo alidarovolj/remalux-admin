@@ -124,12 +124,17 @@ const createProduct = async () => {
     notifications.showNotification("error", "Данные не заполнены", "Проверьте правильность введенных данных и попробуйте снова.");
     return;
   }
-  await products.createProduct(form.value);
-  if (products.createdProduct !== false) {
-    notifications.showNotification("success", "Продукт успешно создан!", "Продукт успешно создан, его можно увидеть в списке продуктов.");
-    router.push('/products')
-  } else {
-    notifications.showNotification("error", "Ошибка создания продукта!", "Попробуйте позже.");
+
+  try {
+    await products.createProduct(form.value);
+    if (products.createdProduct) {
+      notifications.showNotification("success", "Продукт успешно создан!", "Продукт успешно создан, его можно увидеть в списке продуктов.");
+      await router.push('/products')
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -553,7 +558,8 @@ const selectFilter = (index, value) => {
                         {{ getFilterTitleById(filter.filter_id).ru }}:
                       </p>
                       <p>
-                        {{ filter.value.ru }}<span v-if="filter.value.kz">, {{ filter.value.kz }}</span><span v-if="filter.value.en">, {{ filter.value.en }}</span>
+                        {{ filter.value.ru }}<span v-if="filter.value.kz">, {{ filter.value.kz }}</span><span
+                          v-if="filter.value.en">, {{ filter.value.en }}</span>
                       </p>
                       <XMarkIcon
                           @click="form.filter_data.splice(ind, 1)"

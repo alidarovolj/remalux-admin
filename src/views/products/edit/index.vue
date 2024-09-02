@@ -122,12 +122,17 @@ const editProduct = async () => {
     notifications.showNotification("error", "Данные не заполнены", "Проверьте правильность введенных данных и попробуйте снова.");
     return;
   }
-  await products.editProduct(route.params.id, form.value);
-  if (products.editedProduct !== false) {
-    notifications.showNotification("success", "Продукт успешно создан!", "Продукт успешно создан, его можно увидеть в списке продуктов.");
-    router.push('/products')
-  } else {
-    notifications.showNotification("error", "Ошибка создания продукта!", "Попробуйте позже.");
+
+  try {
+    await products.editProduct(route.params.id, form.value);
+    if (products.editedProduct) {
+      notifications.showNotification("success", "Продукт успешно создан!", "Продукт успешно создан, его можно увидеть в списке продуктов.");
+      await router.push('/products')
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
 };
 

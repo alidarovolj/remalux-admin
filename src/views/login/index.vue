@@ -5,8 +5,10 @@ import {ref} from "vue";
 import {api} from "@/utils/axios.js";
 import {useNotificationStore} from "@/stores/notifications.js";
 import router from "@/router/index.js";
+import {useUsersStore} from "@/stores/users.js";
 
 const notifications = useNotificationStore();
+const user = useUsersStore()
 
 const form = ref({
   email: null,
@@ -27,21 +29,12 @@ const authorizeUser = async () => {
   }
 
   try {
-    const response = await api(`/api/auth/admin/login`, "POST", {
-      body: JSON.stringify(form.value)
-    });
-
-    const data = response.data;
-
-    if (data.access_token) {
-      notifications.showNotification("success", "Успешная авторизация!", "Вы успешно авторизовались в системе, дождитесь перенаправления на главную страницу.");
-      localStorage.setItem("token", data.access_token);
-      await router.push({name: "Dashboard"});
-    } else {
-      notifications.showNotification("error", "Токен не получен", "Попробуйте позже.");
-    }
+    await user.authUser(form.value)
+    notifications.showNotification("success", "Успешная авторизация!", "Вы успешно авторизовались в системе, дождитесь перенаправления на главную страницу.");
+    localStorage.setItem("token", user.authorizedUser.access_token);
+    await router.push({name: "Dashboard"});
   } catch (e) {
-    notifications.showNotification("error", "Ошибка авторизации!", "Проверьте правильность введенных данных и попробуйте снова.");
+    notifications.showNotification("error", "Произошла ошибка", e);
   }
 }
 </script>

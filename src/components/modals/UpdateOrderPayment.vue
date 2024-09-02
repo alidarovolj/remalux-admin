@@ -24,16 +24,19 @@ const setPayStatus = async () => {
     form.value.is_paid = 1
   }
 
-  await orders.setPaymentStatus(modals.modal.modalData.id, form.value)
-  if (orders.paymentStatus !== false) {
-    notifications.showNotification("success", "Успешно", "Статус оплаты успешно обновлен");
-    await orders.getOrders()
-    await orders.getOrdersDetail(modals.modal.modalData.id)
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка", orders.paymentStatus.message);
+  try {
+    await orders.setPaymentStatus(modals.modal.modalData.id, form.value)
+    if (orders.paymentStatus) {
+      notifications.showNotification("success", "Успешно", "Статус оплаты успешно обновлен");
+      await orders.getOrders()
+      await orders.getOrdersDetail(modals.modal.modalData.id)
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false
 }
 </script>
 

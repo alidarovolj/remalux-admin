@@ -14,8 +14,8 @@ export const useImagesStore = defineStore('images', () => {
         async getFiltersList() {
             try {
                 const response = await api(`/api/filters/all`, "GET", {}, route.query);
-                const data = response.data;
-                uploadedImage.value = data;
+                
+                uploadedImage.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

@@ -14,15 +14,18 @@ const notifications = useNotificationStore();
 const removeNewsCategory = async () => {
   loading.value = true
 
-  await news.removeNewsCategory(modals.modal.modalData.id)
-  if (news.removedNewsCategory !== false) {
-    notifications.showNotification("success", "Новостная категория успешно удалена", "Новостная категория успешно удалена из системы.");
-    await news.getNewsCategories()
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка", news.removedNewsCategory.message);
+  try {
+    await news.removeNewsCategory(modals.modal.modalData.id)
+    if (news.removedNewsCategory) {
+      notifications.showNotification("success", "Новостная категория успешно удалена", "Новостная категория успешно удалена из системы.");
+      await news.getNewsCategories()
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false
 }
 </script>
 

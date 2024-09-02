@@ -14,15 +14,18 @@ const notifications = useNotificationStore();
 const removeProduct = async () => {
   loading.value = true
 
-  await products.removeProduct(modals.modal.modalData.id)
-  if (products.removedProduct !== false) {
-    notifications.showNotification("success", "Продукт успешно удален", "Продукт успешно удален из системы.");
-    await products.getProductsList()
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка", products.removedProduct.message);
+  try {
+    await products.removeProduct(modals.modal.modalData.id)
+    if (products.removedProduct) {
+      notifications.showNotification("success", "Продукт успешно удален", "Продукт успешно удален из системы.");
+      await products.getProductsList()
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false
 }
 </script>
 

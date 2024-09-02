@@ -31,15 +31,19 @@ const editVariant = async () => {
     loading.value = false;
     return;
   }
-  await products.changePriceVariant(modals.modal.modalData.id, formEdit.value);
-  if (products.changedVariantPrice !== false) {
-    notifications.showNotification("success", "Цена варианта продукта успешно отредактирована!", "Вы можете увидеть отредактированные данные в списке вариантов");
-    await products.getProductVariantsList()
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка редактирования цены варианта продукта!", products.changedVariantPrice.message);
+
+  try {
+    await products.changePriceVariant(modals.modal.modalData.id, formEdit.value);
+    if (products.changedVariantPrice) {
+      notifications.showNotification("success", "Цена варианта продукта успешно отредактирована!", "Вы можете увидеть отредактированные данные в списке вариантов");
+      await products.getProductVariantsList()
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false;
 };
 
 onMounted(async () => {

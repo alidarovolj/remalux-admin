@@ -98,14 +98,18 @@ const createNews = async () => {
     loading.value = false;
     return;
   }
-  await news.createNews(form.value);
-  if (news.createdNews !== false) {
-    notifications.showNotification("success", "Новость успешно создана!", "Новость успешно создана, ее можно увидеть в списке новостей.");
-    await news.getNewsListWithPG();
-  } else {
-    notifications.showNotification("error", "Ошибка создания новости!", news.createdNews.message);
+
+  try {
+    await news.createNews(form.value);
+    if (news.createdNews !== false) {
+      notifications.showNotification("success", "Новость успешно создана!", "Новость успешно создана, ее можно увидеть в списке новостей.");
+      await news.getNewsListWithPG();
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false;
 };
 
 onMounted(fetchData);

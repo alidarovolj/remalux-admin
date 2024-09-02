@@ -35,15 +35,19 @@ const createBrands = async () => {
     loading.value = false;
     return;
   }
-  await brands.createBrand(form.value);
-  if (brands.createdBrand !== false) {
-    notifications.showNotification("success", "Бренд успешно создан!", "Бренд успешно создан, его можно увидеть в списке брендов.");
-    await brands.getBrandsList();
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка создания бренда!", brands.createdBrand.message);
+
+  try {
+    await brands.createBrand(form.value);
+    if (brands.createdBrand) {
+      notifications.showNotification("success", "Бренд успешно создан!", "Бренд успешно создан, его можно увидеть в списке брендов.");
+      await brands.getBrandsList();
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false;
 };
 </script>
 

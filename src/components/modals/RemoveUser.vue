@@ -18,15 +18,18 @@ const form = ref({
 const removeUser = async () => {
   loading.value = true
 
-  await users.removeUser(modals.modal.modalData.id)
-  if (users.removedUser !== false) {
-    notifications.showNotification("success", "Пользователь успешно удален", "Пользователь успешно удален из системы и не сможет войти в нее.");
-    await users.getUserList()
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка", users.removedUser.message);
+  try {
+    await users.removeUser(modals.modal.modalData.id)
+    if (users.removedUser) {
+      notifications.showNotification("success", "Пользователь успешно удален", "Пользователь успешно удален из системы и не сможет войти в нее.");
+      await users.getUserList()
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false
 }
 </script>
 

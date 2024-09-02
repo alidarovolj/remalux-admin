@@ -38,14 +38,19 @@ const createUser = async () => {
     loading.value = false;
     return;
   }
-  await users.createUser(form.value);
-  if(form.value.password === form.value.password_confirmation) {
-    if (users.createdUser !== false) {
-      notifications.showNotification("success", "Пользователь успешно создан!", "Пользователь успешно создан, его можно увидеть в списке пользователей.");
-      await users.getUserList()
-      modals.modal.show = false;
-    } else {
-      notifications.showNotification("error", "Ошибка создания пользователя!", users.createdUser.message);
+
+  if (form.value.password === form.value.password_confirmation) {
+    try {
+      await users.createUser(form.value);
+      if (users.createdUser) {
+        notifications.showNotification("success", "Пользователь успешно создан!", "Пользователь успешно создан, его можно увидеть в списке пользователей.");
+        await users.getUserList()
+        modals.modal.show = false;
+      }
+    } catch (e) {
+      notifications.showNotification("error", "Произошла ошибка", e);
+    } finally {
+      loading.value = false;
     }
   } else {
     notifications.showNotification("error", "Ошибка создания пользователя!", "Пароли не совпадают.");

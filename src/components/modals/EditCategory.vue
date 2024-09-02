@@ -46,15 +46,19 @@ const editCategory = async () => {
     loading.value = false;
     return;
   }
-  await categories.editCategory(modals.modal.modalData.id, formEdit.value);
-  if (categories.editedCategory !== false) {
-    notifications.showNotification("success", "Категория успешно отредактирована!", "Категория успешно отредактирована, ее можно увидеть в списке категорий.");
-    await categories.getCategoriesListWithPG()
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка редактирования категории!", categories.editedCategory.message);
+
+  try {
+    await categories.editCategory(modals.modal.modalData.id, formEdit.value);
+    if (categories.editedCategory) {
+      notifications.showNotification("success", "Категория успешно отредактирована!", "Категория успешно отредактирована, ее можно увидеть в списке категорий.");
+      await categories.getCategoriesListWithPG()
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false;
 };
 
 onMounted(async () => {

@@ -11,13 +11,16 @@ export const useColorsStore = defineStore("colors", () => {
 
     return {
         colorsList,
-        async getColors(id) {
+        async getColors(search) {
             try {
-                const response = await api(`/api/colors/all`, "GET", {}, {
-                    'filters[parentColor.id]': id
-                });
-                const data = response.data;
-                colorsList.value = data;
+                console.log(search)
+                if(search.length >= 3) {
+                    const response = await api(`/api/colors`, "GET", {}, {
+                        'searchKeyword': search.toUpperCase()
+                    });
+
+                    colorsList.value = response;
+                }
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

@@ -20,8 +20,8 @@ export const useOrdersStore = defineStore('orders', () => {
         async getOrders() {
             try {
                 const response = await api(`/api/admin/orders/`, "GET", {}, route.query);
-                const data = response.data;
-                ordersList.value = data;
+                
+                ordersList.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -29,8 +29,8 @@ export const useOrdersStore = defineStore('orders', () => {
         async getOrdersDetail(id) {
             try {
                 const response = await api(`/api/admin/orders/${id}`, "GET", {}, route.query);
-                const data = response.data;
-                ordersDetail.value = data;
+                
+                ordersDetail.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -40,8 +40,8 @@ export const useOrdersStore = defineStore('orders', () => {
                 const response = await api(`/api/admin/orders/${id}/status`, "PATCH", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                updatedStatus.value = data;
+                
+                updatedStatus.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -51,8 +51,8 @@ export const useOrdersStore = defineStore('orders', () => {
                 const response = await api(`/api/admin/orders/${id}/paid`, "PATCH", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                paymentStatus.value = data;
+                
+                paymentStatus.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

@@ -104,14 +104,18 @@ const editNews = async () => {
     loading.value = false;
     return;
   }
-  await news.editNews(route.params.id, form.value);
-  if (news.editedNews !== false) {
-    notifications.showNotification("success", "Новость успешно отредактирована!", "Новость успешно отредактирована, ее можно увидеть в списке новостей.");
-    await news.getNewsListWithPG();
-  } else {
-    notifications.showNotification("error", "Ошибка редактирования новости!", news.editedNews.message);
+
+  try {
+    await news.editNews(route.params.id, form.value);
+    if (news.editedNews !== false) {
+      notifications.showNotification("success", "Новость успешно отредактирована!", "Новость успешно отредактирована, ее можно увидеть в списке новостей.");
+      await news.getNewsListWithPG();
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false;
 };
 
 onMounted(fetchData);

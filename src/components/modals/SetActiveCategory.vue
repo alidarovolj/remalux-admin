@@ -24,15 +24,18 @@ const setActive = async () => {
     form.value.is_active = 1
   }
 
-  await categories.setActive(modals.modal.modalData.id, form.value)
-  if (categories.activeResult !== false) {
-    notifications.showNotification("success", "Успешная смена статуса категории", "Статус категории успешно изменен, теперь категория доступна/недоступна для пользователей");
-    await categories.getCategoriesListWithPG()
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка", categories.activeResult.message);
+  try {
+    await categories.setActive(modals.modal.modalData.id, form.value)
+    if (categories.activeResult) {
+      notifications.showNotification("success", "Успешная смена статуса категории", "Статус категории успешно изменен, теперь категория доступна/недоступна для пользователей");
+      await categories.getCategoriesListWithPG()
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false
 }
 </script>
 

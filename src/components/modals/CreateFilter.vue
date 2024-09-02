@@ -42,15 +42,19 @@ const createFilter = async () => {
     notifications.showNotification("error", "Данные не заполнены", "Проверьте правильность введенных данных и попробуйте снова.");
     return;
   }
-  await filters.createFilter(form.value);
-  if (filters.createdFilter !== false) {
-    await filters.getFiltersListWithPG()
-    notifications.showNotification("success", "Фильтр успешно создан!", "Фильтр успешно создан, его можно увидеть в списке фильтров.");
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка создания фильтра!", "Попробуйте позже.");
+
+  try {
+    await filters.createFilter(form.value);
+    if (filters.createdFilter) {
+      await filters.getFiltersListWithPG()
+      notifications.showNotification("success", "Фильтр успешно создан!", "Фильтр успешно создан, его можно увидеть в списке фильтров.");
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false;
 };
 </script>
 
@@ -117,7 +121,8 @@ const createFilter = async () => {
                   </div>
                 </div>
                 <div v-else-if="currentLanguage === 'kz'">
-                  <div class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+                  <div
+                      class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                     <label
                         for="name"
                         class="block text-xs font-medium text-gray-900">
@@ -134,7 +139,8 @@ const createFilter = async () => {
                   </div>
                 </div>
                 <div v-else>
-                  <div class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+                  <div
+                      class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                     <label
                         for="name"
                         class="block text-xs font-medium text-gray-900">
@@ -164,7 +170,8 @@ const createFilter = async () => {
                     v-for="(item, index) of form.values"
                     :key="index"
                     :class="{ 'mb-2' : index !== form.values.length - 1 }">
-                  <div class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+                  <div
+                      class="rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
                     <label
                         for="name"
                         class="block text-xs font-medium text-gray-900">

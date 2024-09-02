@@ -14,15 +14,18 @@ const notifications = useNotificationStore();
 const removeFilter = async () => {
   loading.value = true
 
-  await filters.removeFilter(modals.modal.modalData.id)
-  if (filters.removedFilter !== false) {
-    notifications.showNotification("success", "Пользователь успешно удален", "Пользователь успешно удален из системы и не сможет войти в нее.");
-    await filters.getFiltersList()
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка", users.removedUser.message);
+  try {
+    await filters.removeFilter(modals.modal.modalData.id)
+    if (filters.removedFilter) {
+      notifications.showNotification("success", "Пользователь успешно удален", "Пользователь успешно удален из системы и не сможет войти в нее.");
+      await filters.getFiltersList()
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false
 }
 </script>
 

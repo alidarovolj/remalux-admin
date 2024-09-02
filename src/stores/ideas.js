@@ -26,8 +26,8 @@ export const useIdeasStore = defineStore('ideas', () => {
         async getIdeasListWithPG() {
             try {
                 const response = await api(`/api/admin/ideas`, "GET", {}, route.query);
-                const data = response.data;
-                ideasListWithPG.value = data;
+                
+                ideasListWithPG.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -43,8 +43,8 @@ export const useIdeasStore = defineStore('ideas', () => {
         async getIdeasRoomsList() {
             try {
                 const response = await api(`/api/admin/ideas/rooms`, "GET", {}, route.query);
-                const data = response.data;
-                ideaRooms.value = data;
+                
+                ideaRooms.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -52,8 +52,8 @@ export const useIdeasStore = defineStore('ideas', () => {
         async getIdeasColorsList() {
             try {
                 const response = await api(`/api/admin/ideas/colors`, "GET", {}, route.query);
-                const data = response.data;
-                ideaColors.value = data;
+                
+                ideaColors.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -63,8 +63,8 @@ export const useIdeasStore = defineStore('ideas', () => {
                 const response = await api(`/api/admin/ideas`, "POST", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                createdIdea.value = data;
+                
+                createdIdea.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
                 createdIdea.value = false
@@ -73,8 +73,8 @@ export const useIdeasStore = defineStore('ideas', () => {
         async removeIdea(id) {
             try {
                 const response = await api(`/api/admin/ideas/${id}`, "DELETE", {}, route.query);
-                const data = response.data;
-                removedIdea.value = data;
+                
+                removedIdea.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -84,8 +84,8 @@ export const useIdeasStore = defineStore('ideas', () => {
                 const response = await api(`/api/admin/ideas/${id}`, "PUT", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                editedIdea.value = data;
+                
+                editedIdea.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

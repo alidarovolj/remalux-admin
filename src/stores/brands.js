@@ -16,8 +16,8 @@ export const useBrandsStore = defineStore('brands', () => {
         async getBrandsList() {
             try {
                 const response = await api(`/api/admin/brands`, "GET", {}, route.query);
-                const data = response.data;
-                brandsList.value = data;
+                
+                brandsList.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -27,22 +27,10 @@ export const useBrandsStore = defineStore('brands', () => {
                 const response = await api(`/api/admin/brands`, "POST", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                createdBrand.value = data;
+                
+                createdBrand.value = response;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                        createdBrand.value = false;
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                        createdBrand.value = false;
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                    createdBrand.value = false;
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
     };

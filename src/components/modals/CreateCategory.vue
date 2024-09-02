@@ -62,15 +62,19 @@ const createCategory = async () => {
     notifications.showNotification("error", "Данные не заполнены", "Проверьте правильность введенных данных и попробуйте снова.");
     return;
   }
-  await categories.createCategory(form.value);
-  if (categories.createdCategory !== false) {
-    await categories.getCategoriesListWithPG()
-    notifications.showNotification("success", "Категория успешно создана!", "Категория успешно создана, ее можно увидеть в списке категорий.");
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка создания категории!", "Попробуйте позже.");
+
+  try {
+    await categories.createCategory(form.value);
+    if (categories.createdCategory) {
+      await categories.getCategoriesListWithPG()
+      notifications.showNotification("success", "Категория успешно создана!", "Категория успешно создана, ее можно увидеть в списке категорий.");
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false;
 };
 
 const fetchData = async () => {

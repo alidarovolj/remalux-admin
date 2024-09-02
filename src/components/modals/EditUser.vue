@@ -34,15 +34,19 @@ const editUser = async () => {
     loading.value = false;
     return;
   }
-  await users.editUser(modals.modal.modalData.id, formEdit.value);
-  if (users.editedUser !== false) {
-    notifications.showNotification("success", "Пользователь успешно отредактирован!", "Пользователь успешно отредактирован, его можно увидеть в списке пользователей.");
-    await users.getUserList()
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка создания пользователя!", users.editedUser.message);
+
+  try {
+    await users.editUser(modals.modal.modalData.id, formEdit.value);
+    if (users.editedUser) {
+      notifications.showNotification("success", "Пользователь успешно отредактирован!", "Пользователь успешно отредактирован, его можно увидеть в списке пользователей.");
+      await users.getUserList()
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false;
 };
 
 onMounted(() => {

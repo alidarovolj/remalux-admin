@@ -22,8 +22,8 @@ export const useCategoriesStore = defineStore('categories', () => {
         async getCategoriesList() {
             try {
                 const response = await api(`/api/admin/categories/all`, "GET", {}, route.query);
-                const data = response.data;
-                categoriesList.value = data;
+                
+                categoriesList.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -31,8 +31,8 @@ export const useCategoriesStore = defineStore('categories', () => {
         async getCategoriesListWithPG() {
             try {
                 const response = await api(`/api/admin/categories`, "GET", {}, route.query);
-                const data = response.data;
-                categoriesListWithPG.value = data;
+                
+                categoriesListWithPG.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -42,8 +42,8 @@ export const useCategoriesStore = defineStore('categories', () => {
                 const response = await api(`/api/admin/categories`, "POST", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                createdCategory.value = data;
+                
+                createdCategory.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -53,22 +53,10 @@ export const useCategoriesStore = defineStore('categories', () => {
                 const response = await api(`/api/admin/categories/${id}`, "PUT", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                editedCategory.value = data;
+                
+                editedCategory.value = response;
             } catch (e) {
-                if (e.response) {
-                    if (e.response.status !== 500) {
-                        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-                        editedCategory.value = false;
-                    } else {
-                        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-                        editedCategory.value = false;
-                    }
-                } else {
-                    console.error(e);
-                    notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
-                    editedCategory.value = false;
-                }
+                notifications.showNotification("error", "Произошла ошибка", e);
             }
         },
         async setActive(id, form) {
@@ -76,8 +64,8 @@ export const useCategoriesStore = defineStore('categories', () => {
                 const response = await api(`api/admin/categories/${id}`, "PATCH", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                activeResult.value = data;
+                
+                activeResult.value = response;
             } catch (e) {
                 if (e.response) {
                     if (e.response.status !== 500) {

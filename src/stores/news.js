@@ -29,8 +29,8 @@ export const useNewsStore = defineStore('news', () => {
         async getNewsListWithPG() {
             try {
                 const response = await api(`/api/admin/news`, "GET", {}, route.query);
-                const data = response.data;
-                newsListWithPG.value = data;
+                
+                newsListWithPG.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -38,8 +38,8 @@ export const useNewsStore = defineStore('news', () => {
         async getDetailNews(id) {
             try {
                 const response = await api(`/api/admin/news/${id}`, "GET", {}, route.query);
-                const data = response.data;
-                detailNews.value = data;
+                
+                detailNews.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -47,8 +47,8 @@ export const useNewsStore = defineStore('news', () => {
         async getNewsCategories() {
             try {
                 const response = await api(`/api/admin/news/categories/all`, "GET", {}, route.query);
-                const data = response.data;
-                newsCategories.value = data;
+                
+                newsCategories.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -58,8 +58,8 @@ export const useNewsStore = defineStore('news', () => {
                 const response = await api(`/api/admin/news`, "POST", {
                     body: JSON.stringify(form),
                 }, route.query);
-                const data = response.data;
-                createdNews.value = data;
+                
+                createdNews.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -69,8 +69,8 @@ export const useNewsStore = defineStore('news', () => {
                 const response = await api(`/api/admin/news/categories`, "POST", {
                     body: JSON.stringify(form),
                 }, route.query);
-                const data = response.data;
-                createdNewsCategory.value = data;
+                
+                createdNewsCategory.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -80,8 +80,8 @@ export const useNewsStore = defineStore('news', () => {
                 const response = await api(`/api/admin/news/${id}`, "PUT", {
                     body: JSON.stringify(form),
                 }, route.query);
-                const data = response.data;
-                editedNews.value = data;
+                
+                editedNews.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -91,8 +91,8 @@ export const useNewsStore = defineStore('news', () => {
                 const response = await api(`api/admin/news/categories/${id}`, "PUT", {
                     body: JSON.stringify(form),
                 }, route.query);
-                const data = response.data;
-                editedNewsCategory.value = data;
+                
+                editedNewsCategory.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -102,8 +102,8 @@ export const useNewsStore = defineStore('news', () => {
                 const response = await api(`/api/admin/news/${id}`, "DELETE", {
                     body: JSON.stringify(form),
                 }, route.query);
-                const data = response.data;
-                removedNews.value = data;
+                
+                removedNews.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -113,8 +113,8 @@ export const useNewsStore = defineStore('news', () => {
                 const response = await api(`/api/admin/news/categories/${id}`, "DELETE", {
                     body: JSON.stringify(form),
                 }, route.query);
-                const data = response.data;
-                removedNewsCategory.value = data;
+                
+                removedNewsCategory.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

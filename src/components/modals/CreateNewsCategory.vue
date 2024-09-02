@@ -37,15 +37,19 @@ const createNews = async () => {
     notifications.showNotification("error", "Данные не заполнены", "Проверьте правильность введенных данных и попробуйте снова.");
     return;
   }
-  await news.createNewsCategory(form.value);
-  if (news.createdNewsCategory !== false) {
-    await news.getNewsCategories()
-    notifications.showNotification("success", "Новостная категория успешно создана!", "Новостная категория успешно создана, ее можно увидеть в списке новостных категорий.");
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка создания новостной категории!", "Попробуйте позже.");
+
+  try {
+    await news.createNewsCategory(form.value);
+    if (news.createdNewsCategory) {
+      await news.getNewsCategories()
+      notifications.showNotification("success", "Новостная категория успешно создана!", "Новостная категория успешно создана, ее можно увидеть в списке новостных категорий.");
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false;
 };
 </script>
 

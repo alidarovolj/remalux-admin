@@ -22,8 +22,8 @@ export const useContactsStore = defineStore('contacts', () => {
         async getContacts() {
             try {
                 const response = await api(`/api/admin/contacts/`, "GET", {}, route.query);
-                const data = response.data;
-                contactsList.value = data;
+                
+                contactsList.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -31,8 +31,8 @@ export const useContactsStore = defineStore('contacts', () => {
         async getDetailContact(id) {
             try {
                 const response = await api(`/api/admin/contacts/${id}`, "GET", {}, route.query);
-                const data = response.data;
-                detailContact.value = data;
+                
+                detailContact.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -40,8 +40,8 @@ export const useContactsStore = defineStore('contacts', () => {
         async getCities() {
             try {
                 const response = await api(`/api/admin/contacts/cities`, "GET", {}, route.query);
-                const data = response.data;
-                citiesList.value = data;
+                
+                citiesList.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -51,8 +51,8 @@ export const useContactsStore = defineStore('contacts', () => {
                 const response = await api(`/api/admin/contacts`, "POST", {
                     body: JSON.stringify(body)
                 }, route.query);
-                const data = response.data;
-                createdContact.value = data;
+                
+                createdContact.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -60,8 +60,8 @@ export const useContactsStore = defineStore('contacts', () => {
         async removeContact(id) {
             try {
                 const response = await api(`/api/admin/contacts/${id}`, "DELETE", {}, route.query);
-                const data = response.data;
-                removedContact.value = data;
+                
+                removedContact.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

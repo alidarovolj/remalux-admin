@@ -28,8 +28,8 @@ export const useFiltersStore = defineStore('filters', () => {
         async getFiltersList() {
             try {
                 const response = await api(`/api/filters/all`, "GET", {}, route.query);
-                const data = response.data;
-                filtersList.value = data;
+                
+                filtersList.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -37,8 +37,8 @@ export const useFiltersStore = defineStore('filters', () => {
         async getFiltersListWithPG() {
             try {
                 const response = await api(`/api/admin/filters/paginated`, "GET", {}, route.query);
-                const data = response.data;
-                filtersListWithPG.value = data;
+                
+                filtersListWithPG.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -46,8 +46,8 @@ export const useFiltersStore = defineStore('filters', () => {
         async getFiltersListByCategory(id) {
             try {
                 const response = await api(`api/admin/categories/${id}/filters`, "GET", {}, route.query);
-                const data = response.data;
-                filtersListByCategory.value = data;
+                
+                filtersListByCategory.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -57,8 +57,8 @@ export const useFiltersStore = defineStore('filters', () => {
                 const response = await api(`/api/admin/filters`, "POST", {
                     body: JSON.stringify(form)
                 }, route.query);
-                const data = response.data;
-                createdFilter.value = data;
+                
+                createdFilter.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -66,8 +66,8 @@ export const useFiltersStore = defineStore('filters', () => {
         async removeFilter(id) {
             try {
                 const response = await api(`/api/admin/filters/${id}`, "DELETE", {}, route.query);
-                const data = response.data;
-                removedFilter.value = data;
+                
+                removedFilter.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -75,8 +75,8 @@ export const useFiltersStore = defineStore('filters', () => {
         async getFilterValues(id, value) {
             try {
                 const response = await api(`/api/admin/filters/${id}/values?searchKeyword=${value}`, "GET", {}, route.query);
-                const data = response.data;
-                filterValues.value = data;
+                
+                filterValues.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -84,8 +84,8 @@ export const useFiltersStore = defineStore('filters', () => {
         async getDetailFilter(id) {
             try {
                 const response = await api(`/api/admin/filters/${id}`, "GET", {}, route.query);
-                const data = response.data;
-                filterDetail.value = data;
+                
+                filterDetail.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
@@ -95,8 +95,8 @@ export const useFiltersStore = defineStore('filters', () => {
                 const response = await api(`/api/admin/filters/${id}`, "PUT", {
                     body: JSON.stringify(value)
                 }, route.query);
-                const data = response.data;
-                editedFilter.value = data;
+                
+                editedFilter.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

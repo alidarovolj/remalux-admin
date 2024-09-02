@@ -24,15 +24,18 @@ const setAdmin = async () => {
     form.value.is_admin = 1
   }
 
-  await users.setAdmin(modals.modal.modalData.id, form.value)
-  if (users.checkAdmin !== false) {
-    notifications.showNotification("success", "Пользователь успешно указан администратором!", "Пользователь успешно указан администратором, его можно увидеть в списке администраторов.");
-    await users.getUserList()
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка", users.checkAdmin.message);
+  try {
+    await users.setAdmin(modals.modal.modalData.id, form.value)
+    if (users.checkAdmin) {
+      notifications.showNotification("success", "Пользователь успешно указан администратором!", "Пользователь успешно указан администратором, его можно увидеть в списке администраторов.");
+      await users.getUserList()
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false
 }
 </script>
 

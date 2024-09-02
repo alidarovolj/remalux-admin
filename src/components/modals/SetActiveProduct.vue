@@ -24,15 +24,18 @@ const setActive = async () => {
     form.value.is_active = 1
   }
 
-  await products.setActive(modals.modal.modalData.id, form.value)
-  if (products.activeResult !== false) {
-    notifications.showNotification("success", "Успешная смена статуса продукта", "Статус продукта успешно изменен, теперь продукт доступен/недоступен для пользователей");
-    await products.getProductsList()
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка", products.activeResult.message);
+  try {
+    await products.setActive(modals.modal.modalData.id, form.value)
+    if (products.activeResult) {
+      notifications.showNotification("success", "Успешная смена статуса продукта", "Статус продукта успешно изменен, теперь продукт доступен/недоступен для пользователей");
+      await products.getProductsList()
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false
 }
 </script>
 

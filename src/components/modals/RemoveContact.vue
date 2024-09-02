@@ -16,22 +16,15 @@ const removeContact = async () => {
 
   try {
     await contacts.removeContact(modals.modal.modalData.id)
-    notifications.showNotification("success", "Контакт успешно удален", "Контакт успешно удален из системы.");
-    await contacts.getContacts()
-    modals.modal.show = false;
-  } catch (e) {
-    if (e.response) {
-      if (e.response.status !== 500) {
-        notifications.showNotification("error", "Произошла ошибка", e.response.data.message);
-      } else {
-        notifications.showNotification("error", "Ошибка сервера!", "Попробуйте позже.");
-      }
-    } else {
-      console.error(e);
-      notifications.showNotification("error", "Произошла ошибка", "Неизвестная ошибка");
+    if(contacts.removedContact) {
+      notifications.showNotification("success", "Контакт успешно удален", "Контакт успешно удален из системы.");
+      await contacts.getContacts()
+      modals.modal.show = false;
     }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 </script>

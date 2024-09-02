@@ -24,16 +24,19 @@ const updateStatus = async () => {
     form.value.status = 'ended'
   }
 
-  await orders.updateStatus(modals.modal.modalData.id, form.value)
-  if (orders.updatedStatus !== false) {
-    notifications.showNotification("success", "Успешно", "Статус заказа успешно обновлен");
-    await orders.getOrders()
-    await orders.getOrdersDetail(modals.modal.modalData.id)
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка", orders.updatedStatus.message);
+  try {
+    await orders.updateStatus(modals.modal.modalData.id, form.value)
+    if (orders.updatedStatus) {
+      notifications.showNotification("success", "Успешно", "Статус заказа успешно обновлен");
+      await orders.getOrders()
+      await orders.getOrdersDetail(modals.modal.modalData.id)
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false
 }
 </script>
 

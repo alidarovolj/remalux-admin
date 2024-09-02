@@ -7,7 +7,7 @@ import {
   PlusCircleIcon,
   TrashIcon
 } from "@heroicons/vue/24/outline/index.js";
-import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {computed, nextTick, onMounted, onBeforeUnmount, ref, watch} from "vue";
 import {useVuelidate} from "@vuelidate/core";
 import {required} from "@vuelidate/validators";
 import UploadImage from "@/components/UploadImage.vue";
@@ -27,6 +27,9 @@ const selectedColor = ref(null);
 const colorForArray = ref(null);
 const colors = useColorsStore()
 const arrayOfColors = ref([])
+const showColorPicker = ref(false)
+const searchColor = ref('')
+const colorPickerContainer = ref(null);
 
 colors.colorsList = null
 
@@ -132,7 +135,7 @@ const dynamicClass = computed(() => {
 });
 
 const createIdea = async () => {
-  if(selectedColor.value) {
+  if (selectedColor.value) {
     form.value.idea_color_id = selectedColor.value.id;
   }
   await v$.value.$validate();
@@ -143,34 +146,44 @@ const createIdea = async () => {
     return;
   }
 
-  await idea.createIdea(form.value);
-  if (idea.createdIdea) {
-    await idea.getIdeasListWithPG()
-    notifications.showNotification("success", "Идея успешно создана!", "Идея успешно создана, ее можно увидеть в списке идей.");
-    router.push('/ideas')
-  } else {
-    notifications.showNotification("error", "Ошибка создания идеи!", "Попробуйте позже.");
+  try {
+    await idea.createIdea(form.value);
+    if (idea.createdIdea) {
+      await idea.getIdeasListWithPG()
+      notifications.showNotification("success", "Идея успешно создана!", "Идея успешно создана, ее можно увидеть в списке идей.");
+      await router.push('/ideas')
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
 }
-
-watch(() => selectedColor.value, async (newValue) => {
-  form.value.color_ids = []
-  arrayOfColors.value = []
-  await colors.getColors(selectedColor.value.id)
-});
 
 const fetchData = async () => {
   try {
     await idea.getIdeasRoomsList()
     await idea.getIdeasColorsList()
-  } catch (error) { 
+    await colors.getColors(searchColor.value)
+  } catch (error) {
     console.error(error);
   }
 };
 
+const handleClickOutside = (event) => {
+  if (colorPickerContainer.value && !colorPickerContainer.value.contains(event.target)) {
+    showColorPicker.value = false;
+  }
+};
+
 onMounted(async () => {
-  await nextTick()
-  await fetchData()
+  await nextTick();
+  document.addEventListener('click', handleClickOutside);
+  await fetchData();
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside);
 });
 </script>
 
@@ -217,11 +230,13 @@ onMounted(async () => {
         {{ room.title }}
       </option>
     </select>
-    <div v-if="idea.ideaColors" :class="{ 'border border-red-500': v$.idea_color_id.$error }" class="border px-5 py-2 rounded-md text-xs mb-3">
+    <div v-if="idea.ideaColors" :class="{ 'border border-red-500': v$.idea_color_id.$error }"
+         class="border px-5 py-2 rounded-md text-xs mb-3">
       <Listbox v-if="idea.ideaColors" as="div" class="text-xs" v-model="selectedColor">
         <p class="mb-1">Выберите основной цвет</p>
         <div class="relative mt-2">
-          <ListboxButton class="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:leading-6">
+          <ListboxButton
+              class="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:leading-6">
             <span v-if="selectedColor" class="flex items-center">
               <div :class="`h-5 w-5 flex-shrink-0 rounded-full`" :style="{ backgroundColor: selectedColor.hex }"></div>
               <span class="ml-3 block truncate">{{ selectedColor.title.ru }}</span>
@@ -230,12 +245,14 @@ onMounted(async () => {
               <span class="ml-3 block truncate">Выберите цвет</span>
             </span>
             <span class="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-              <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true"/>
             </span>
           </ListboxButton>
 
-          <transition leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100" leave-to-class="opacity-0">
-            <ListboxOptions class="absolute z-50 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+          <transition leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100"
+                      leave-to-class="opacity-0">
+            <ListboxOptions
+                class="absolute z-50 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
               <ListboxOption
                   as="template"
                   v-for="(item, index) in idea.ideaColors.data"
@@ -246,11 +263,14 @@ onMounted(async () => {
                 <li :class="[active ? 'bg-indigo-600 text-white' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-3 pr-9']">
                   <div class="flex items-center">
                     <div :class="`h-5 w-5 flex-shrink-0 rounded-full`" :style="{ backgroundColor: item.hex }"></div>
-                    <span :class="[selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate']">{{ item.title.ru }}</span>
+                    <span :class="[selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate']">{{
+                        item.title.ru
+                      }}</span>
                   </div>
 
-                  <span v-if="selected" :class="[active ? 'text-white' : 'text-indigo-600', 'absolute inset-y-0 right-0 flex items-center pr-4']">
-                    <CheckIcon class="h-5 w-5" aria-hidden="true" />
+                  <span v-if="selected"
+                        :class="[active ? 'text-white' : 'text-indigo-600', 'absolute inset-y-0 right-0 flex items-center pr-4']">
+                    <CheckIcon class="h-5 w-5" aria-hidden="true"/>
                   </span>
                 </li>
               </ListboxOption>
@@ -259,48 +279,34 @@ onMounted(async () => {
         </div>
       </Listbox>
     </div>
-    <div v-if="colors.colorsList" class="border px-5 py-2 rounded-md text-xs mb-3">
-      <Listbox as="div" class="text-xs" v-model="colorForArray">
-        <p class="mb-1">Выберите рекомендуемые цвета</p>
-        <div class="relative mt-2">
-          <ListboxButton class="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:leading-6">
-            <span v-if="colorForArray" class="flex items-center">
-              <div :class="`h-5 w-5 flex-shrink-0 rounded-full`" :style="{ backgroundColor: colorForArray.hex }"></div>
-              <span class="ml-3 block truncate">{{ colorForArray.title.ru }}</span>
-            </span>
-            <span v-else class="flex items-center">
-              <span class="ml-3 block truncate">Выберите цвет</span>
-            </span>
-            <span class="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-              <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
-            </span>
-          </ListboxButton>
-
-          <transition leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100" leave-to-class="opacity-0">
-            <ListboxOptions class="absolute z-50 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              <ListboxOption
-                  as="template"
-                  v-for="(item, index) in colors.colorsList.data"
-                  :key="index"
-                  @click="form.color_ids.push(item.id); arrayOfColors.push(item)"
-                  :value="item"
-                  v-slot="{ active, selected }"
-              >
-                <li :class="[active ? 'bg-indigo-600 text-white' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-3 pr-9']">
-                  <div class="flex items-center">
-                    <div :class="`h-5 w-5 flex-shrink-0 rounded-full`" :style="{ backgroundColor: item.hex }"></div>
-                    <span :class="[selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate']">{{ item.title.ru }}</span>
-                  </div>
-
-                  <span v-if="selected" :class="[active ? 'text-white' : 'text-indigo-600', 'absolute inset-y-0 right-0 flex items-center pr-4']">
-                    <CheckIcon class="h-5 w-5" aria-hidden="true" />
-                  </span>
-                </li>
-              </ListboxOption>
-            </ListboxOptions>
-          </transition>
+    <div class="border px-5 py-2 rounded-md text-xs mb-3">
+      <div ref="colorPickerContainer">
+        <p class="mb-1">Выберите рекомендованные цвета</p>
+        <div class="relative">
+          <input
+              v-model="searchColor"
+              @input="colors.getColors(searchColor)"
+              @focus="showColorPicker = true"
+              placeholder="Введите hex код цвета или название цвета"
+              class="border px-5 py-2 rounded-md text-xs mb-3 w-full"
+              type="text"
+          >
+          <div
+              v-if="showColorPicker && colors.colorsList"
+              class="absolute top-full left-0 w-full bg-white z-50 shadow-xl"
+          >
+            <div
+                v-for="(item, index) of colors.colorsList.data"
+                :key="index"
+                @click="arrayOfColors.push(item); form.color_ids.push(item.id); showColorPicker = false"
+                class="flex gap-2 p-2 cursor-pointer hover:bg-gray-100 transition-all"
+            >
+              <div class="w-3 h-3" :style="{ backgroundColor: item.hex }"></div>
+              <p>{{ item.title.ru }}</p>
+            </div>
+          </div>
         </div>
-      </Listbox>
+      </div>
       <div class="flex flex-wrap gap-3 mt-2">
         <div
             v-for="(item, index) of arrayOfColors"
@@ -554,7 +560,8 @@ onMounted(async () => {
                   />
                   <div class="border px-5 py-2 rounded-md">
                     <p class="mb-1">Внесите фотографию</p>
-                    <UploadImage @photoUploaded="(event) => form.values[index][i].content.photos[j] = event" type="ideas"/>
+                    <UploadImage @photoUploaded="(event) => form.values[index][i].content.photos[j] = event"
+                                 type="ideas"/>
                   </div>
                 </div>
                 <button

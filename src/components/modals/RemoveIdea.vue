@@ -14,15 +14,18 @@ const notifications = useNotificationStore();
 const removeIdea = async () => {
   loading.value = true
 
-  await ideas.removeIdea(modals.modal.modalData.id)
-  if (ideas.removedIdea !== false) {
-    notifications.showNotification("success", "Идея успешно удалена", "Идея успешно удалена из системы.");
-    await ideas.getIdeasListWithPG()
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка", ideas.removedIdea.message);
+  try {
+    await ideas.removeIdea(modals.modal.modalData.id)
+    if (ideas.removedIdea) {
+      notifications.showNotification("success", "Идея успешно удалена", "Идея успешно удалена из системы.");
+      await ideas.getIdeasListWithPG()
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false
 }
 </script>
 

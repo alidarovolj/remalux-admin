@@ -5,6 +5,7 @@ import {required} from "@vuelidate/validators";
 import {useModalsStore} from "@/stores/modals.js";
 import {useNotificationStore} from "@/stores/notifications.js";
 import {useUsersStore} from "@/stores/users.js";
+import router from "@/router/index.js";
 
 const loading = ref(false);
 
@@ -31,14 +32,19 @@ const changePassword = async () => {
     loading.value = false;
     return;
   }
-  await users.changePassword(modals.modal.modalData.id, form.value);
+
   if (form.value.password === form.value.password_confirmation) {
-    if (users.changedPassword !== false) {
-      notifications.showNotification("success", "Пароль пользователя успешно изменен!", "Теперь пользователь сможет войти в систему с новым паролем.");
-      await users.getUserList()
-      modals.modal.show = false;
-    } else {
-      notifications.showNotification("error", "Ошибка смены пароля", users.createdUser.message);
+    try {
+      await users.changePassword(modals.modal.modalData.id, form.value);
+      if (users.changedPassword) {
+        notifications.showNotification("success", "Пароль пользователя успешно изменен!", "Теперь пользователь сможет войти в систему с новым паролем.");
+        await users.getUserList()
+        modals.modal.show = false;
+      }
+    } catch (e) {
+      notifications.showNotification("error", "Произошла ошибка", e);
+    } finally {
+      loading.value = false;
     }
   } else {
     notifications.showNotification("error", "Ошибка смены пароля!", "Пароли не совпадают.");

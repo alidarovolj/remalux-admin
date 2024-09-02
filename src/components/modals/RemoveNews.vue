@@ -14,15 +14,18 @@ const notifications = useNotificationStore();
 const removeNews = async () => {
   loading.value = true
 
-  await news.removeNews(modals.modal.modalData.id)
-  if (news.removedNews !== false) {
-    notifications.showNotification("success", "Новость успешно удалена", "Новость успешно удалена из системы.");
-    await news.getNewsListWithPG()
-    modals.modal.show = false;
-  } else {
-    notifications.showNotification("error", "Ошибка", news.removedNews.message);
+  try {
+    await news.removeNews(modals.modal.modalData.id)
+    if (news.removedNews) {
+      notifications.showNotification("success", "Новость успешно удалена", "Новость успешно удалена из системы.");
+      await news.getNewsListWithPG()
+      modals.modal.show = false;
+    }
+  } catch (e) {
+    notifications.showNotification("error", "Произошла ошибка", e);
+  } finally {
+    loading.value = false;
   }
-  loading.value = false
 }
 </script>
 
