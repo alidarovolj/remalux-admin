@@ -466,8 +466,8 @@ onBeforeUnmount(() => {
           <p class="font-semibold">Заполните данные</p>
           <p
               v-if="value.length < 2"
-              @click="pushBlock(index)" class="text-mainColor">
-            Добавить
+              @click="pushBlock(index)" class="text-mainColor cursor-pointer">
+            Добавить ячейку в ряд
           </p>
         </div>
         <div class="flex gap-5">

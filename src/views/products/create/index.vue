@@ -389,7 +389,7 @@ const selectFilter = (index, value) => {
                 />
                 <button
                     v-if="newVariant"
-                    @click="form.product_variants.push(newVariant); newVariant = null;"
+                    @click="form.product_variants.push(newVariant.toString()); newVariant = null;"
                     type="button"
                     class="rounded bg-mainColor px-2 py-1 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
                   Добавить

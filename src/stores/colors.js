@@ -14,13 +14,11 @@ export const useColorsStore = defineStore("colors", () => {
         async getColors(search) {
             try {
                 console.log(search)
-                if(search.length >= 3) {
-                    const response = await api(`/api/colors`, "GET", {}, {
-                        'searchKeyword': search
-                    });
+                const response = await api(`/api/colors`, "GET", {}, {
+                    'searchKeyword': search
+                });
 
-                    colorsList.value = response;
-                }
+                colorsList.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }
