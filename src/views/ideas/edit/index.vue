@@ -512,6 +512,10 @@ onBeforeUnmount(() => {
                       </div>
                       <ColorPicker :modelValue="color"
                                    @change="(event) => (form.values[index][i].content.colors[j] = event.value)"/>
+                      <TrashIcon
+                          @click="form.values[index][i].content.colors.splice(j, 1)"
+                          class="w-4 h-4 min-h-4 min-w-4 text-red-500 cursor-pointer"
+                      />
                     </div>
                   </div>
                 </div>

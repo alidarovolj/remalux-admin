@@ -104,6 +104,7 @@ const createNews = async () => {
     if (news.createdNews !== false) {
       notifications.showNotification("success", "Новость успешно создана!", "Новость успешно создана, ее можно увидеть в списке новостей.");
       await news.getNewsListWithPG();
+      await router.push("/news");
     }
   } catch (e) {
     notifications.showNotification("error", "Произошла ошибка", e);
