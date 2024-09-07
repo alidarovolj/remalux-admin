@@ -152,6 +152,7 @@ onMounted(fetchData);
 watch([page, perPage], fetchData);
 
 watch(selectedCategory, async () => {
+  console.log('djakldasdas')
   form.value.category_id = selectedCategory.value.id;
   await filters.getFiltersListByCategory(selectedCategory.value.id);
   newElementsForm.value = []; // Reset the form to ensure it only contains elements for the current category
@@ -162,6 +163,7 @@ watch(selectedCategory, async () => {
     newElementsForm.value.push(elementCopy);
   });
   form.value.filter_data = []
+  await setQuery({target: {value: ''}}, 0)
 });
 
 const setQuery = async (event, index) => {

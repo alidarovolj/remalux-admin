@@ -1,5 +1,5 @@
 <script setup>
-import {ArrowLongLeftIcon, CheckIcon, CircleStackIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLongLeftIcon} from "@heroicons/vue/24/outline/index.js";
 import {nextTick, onMounted, ref} from "vue";
 import {useOrdersStore} from "@/stores/orders.js";
 import {useRoute} from "vue-router";
@@ -7,6 +7,7 @@ import {storeToRefs} from "pinia";
 import TableComponent from "@/components/TableComponent.vue";
 import {formatDate} from "@/utils/formatDate.js";
 import {useModalsStore} from "@/stores/modals.js";
+import {formatPhoneNumber} from "@/utils/formatPhoneNumber.js";
 
 const orders = useOrdersStore()
 const {ordersDetail} = storeToRefs(orders)
@@ -49,11 +50,22 @@ onMounted(async () => {
                     <p class="font-semibold text-xl">
                       Заказ №{{ ordersDetail.id }}
                     </p>
-                    <p class="w-max px-4 py-2 bg-green-100 text-green-500 rounded-md uppercase">
-                      {{ ordersDetail.status }}
-                    </p>
+                    <div
+                        :class="[
+                        { 'bg-green-100 text-green-500' : ordersDetail.status === 'ended' },
+                        { 'bg-blue-100 text-blue-500' : ordersDetail.status === 'created' },
+                        { 'bg-orange-100 text-orange-500' : ordersDetail.status === 'in_process' }
+                    ]"
+                        class="w-max px-4 py-2 rounded-md capitalize"
+                    >
+                      <span v-if="ordersDetail.status === 'created'">Создан</span>
+                      <span v-else-if="ordersDetail.status === 'ended'">Окончен</span>
+                      <span v-else-if="ordersDetail.status === 'in_process'">В процессе</span>
+                      <span v-else>{{ ordersDetail.status }}</span>
+                    </div>
                   </div>
                   <button
+                      v-if="ordersDetail.status !== 'ended'"
                       type="button"
                       class="inline-flex w-max justify-center rounded-md bg-mainColor px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:col-start-2"
                       @click="modals.showModal('UpdateOrderStatus', ordersDetail)"
@@ -72,7 +84,9 @@ onMounted(async () => {
                   <p class="font-semibold">Дата создания заказа:</p>
                   <p>{{ formatDate(ordersDetail.created_at) }}</p>
                 </div>
-                <div class="mb-10">
+                <div
+                    v-if="ordersDetail.user && ordersDetail.user_address"
+                    class="mb-10">
                   <p class="mb-5 font-bold text-mainColor">Заказчик:</p>
                   <div class="flex flex-col gap-3">
                     <div class="flex items-center">
@@ -89,15 +103,24 @@ onMounted(async () => {
                     </div>
                     <div class="flex items-center">
                       <p class="w-1/5 font-semibold">Email:</p>
-                      <a :href="`mailto:${ordersDetail.user.email}`" class="w-4/5 text-mainColor">{{ ordersDetail.user.email }}</a>
+                      <a :href="`mailto:${ordersDetail.user.email}`"
+                         class="w-4/5 text-mainColor">{{ ordersDetail.user.email }}</a>
                     </div>
                     <div class="flex items-center">
                       <p class="w-1/5 font-semibold">Номер телефона:</p>
-                      <a :href="`tel:${ordersDetail.user.phone_number}`" class="w-4/5 text-mainColor">{{ ordersDetail.user.phone_number }}</a>
+                      <a :href="`tel:${ordersDetail.user.phone_number}`"
+                         class="w-4/5 text-mainColor">{{ formatPhoneNumber(ordersDetail.user.phone_number) }}</a>
                     </div>
                     <div class="flex items-center">
                       <p class="w-1/5 font-semibold">Адрес доставки:</p>
-                      <p class="w-4/5">{{ ordersDetail.user_address.address }}<span v-if="ordersDetail.user_address.entrance">, {{ ordersDetail.user_address.entrance }} подъезд</span><span v-if="ordersDetail.user_address.floor">, {{ ordersDetail.user_address.floor }} этаж</span><span v-if="ordersDetail.user_address.float">, {{ ordersDetail.user_address.float }} квартира</span></p>
+                      <p class="w-4/5">{{ ordersDetail.user_address.address }}<span
+                          v-if="ordersDetail.user_address.entrance">, {{
+                          ordersDetail.user_address.entrance
+                        }} подъезд</span><span v-if="ordersDetail.user_address.floor">, {{
+                          ordersDetail.user_address.floor
+                        }} этаж</span><span v-if="ordersDetail.user_address.float">, {{
+                          ordersDetail.user_address.float
+                        }} квартира</span></p>
                     </div>
                     <div class="flex items-center">
                       <p class="w-1/5 font-semibold">Дата доставки:</p>

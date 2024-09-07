@@ -67,7 +67,9 @@ onMounted(fetchData);
           @call_to_refresh="fetchData"
           @updateOrderStatus="(data) => modals.showModal('UpdateOrderStatus', data)"
           @updateOrderPayment="(data) => modals.showModal('UpdateOrderPayment', data)"
-      />
+      >
+      </TableComponent>
+
     </div>
   </div>
 </template>

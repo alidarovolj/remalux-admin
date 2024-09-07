@@ -17,6 +17,8 @@ export const useProductsStore = defineStore('products', () => {
     const productVariantsList = ref(null);
     const changedVariantPrice = ref(null);
     const changedVariantRemains = ref(null);
+    const downloadedVariants = ref(null);
+    const uploadedVariants = ref(null);
     const notifications = useNotificationStore()
 
     return {
@@ -30,6 +32,8 @@ export const useProductsStore = defineStore('products', () => {
         productVariantsList,
         changedVariantPrice,
         changedVariantRemains,
+        downloadedVariants,
+        uploadedVariants,
         async getProductsList() {
             try {
                 const response = await api(`/api/admin/products/`, "GET", {}, route.query);
@@ -131,6 +135,42 @@ export const useProductsStore = defineStore('products', () => {
                 }, route.query);
                 
                 changedVariantRemains.value = response;
+            } catch (e) {
+                notifications.showNotification("error", "Произошла ошибка", e);
+            }
+        },
+        async downloadVariants() {
+            try {
+                // Выполняем запрос на скачивание
+                const response = await api(`api/admin/product-variants/download`, "GET", {}, route.query, { responseType: 'blob' });
+
+                // Создаем Blob из ответа
+                const blob = new Blob([response], { type: 'application/octet-stream' });
+
+                // Создаем URL для этого Blob
+                const url = window.URL.createObjectURL(blob);
+
+                // Создаем ссылку и симулируем клик для скачивания файла
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'variants.xlsx'); // Указываем имя файла, которое будет при скачивании
+                document.body.appendChild(link);
+                link.click();
+
+                // Очищаем объект URL
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(link);
+
+                notifications.showNotification("success", "Файл успешно загружен");
+            } catch (e) {
+                notifications.showNotification("error", "Произошла ошибка при загрузке файла", e);
+            }
+        },
+        async uploadVariants() {
+            try {
+                const response = await api(`api/admin/product-variants/unload`, "POST", {}, route.query);
+
+                uploadedVariants.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

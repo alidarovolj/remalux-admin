@@ -2,15 +2,16 @@
 import {nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import {useVuelidate} from "@vuelidate/core";
 import {vMaska} from "maska/vue"
-import {email, required} from "@vuelidate/validators";
+import {email, minLength, required} from "@vuelidate/validators";
 import {useModalsStore} from "@/stores/modals.js";
 import {useNotificationStore} from "@/stores/notifications.js";
 import {useUsersStore} from "@/stores/users.js";
 import {useDiscountStore} from "@/stores/discounts.js";
-import {XMarkIcon} from "@heroicons/vue/24/outline/index.js";
+import {XMarkIcon} from "@heroicons/vue/24/outline";
 import {useProductsStore} from "@/stores/products.js";
 
 const loading = ref(false);
+const selectedUsers = ref([]);
 
 const modals = useModalsStore()
 const notifications = useNotificationStore();
@@ -22,8 +23,33 @@ const searchProduct = ref('')
 const productPickerContainer = ref(null);
 const pickedProduct = ref(null);
 
+const handleUserChange = (event) => {
+  const userId = event.target.value;
+  console.log(userId);
+  if (!userId) {
+    console.error('User ID is null or undefined');
+    return;
+  }
+
+  if (!users.userListAll || !users.userListAll.data) {
+    console.error('User list is not loaded');
+    return;
+  }
+
+  const pickedUser = users.userListAll.data.find(user => user.id == userId);
+  if (!pickedUser) {
+    console.error('User not found');
+    return;
+  }
+
+  if (!form.value.user_ids.includes(userId)) {
+    form.value.user_ids.push(userId);
+    selectedUsers.value.push(pickedUser);
+  }
+};
+
 const form = ref({
-  user_id: null,
+  user_ids: [],
   product_variant_id: null,
   title: "",
   start_date: "",
@@ -33,7 +59,7 @@ const form = ref({
 });
 
 const v$ = useVuelidate({
-  user_id: {required},
+  user_ids: {required, minLength: minLength(1)},
   product_variant_id: {required},
   title: {required},
   start_date: {required},
@@ -68,6 +94,12 @@ const createDiscount = async () => {
 const handleClickOutside = (event) => {
   if (productPickerContainer.value && !productPickerContainer.value.contains(event.target)) {
     showProductPicker.value = false;
+  }
+};
+
+const validateDiscount = () => {
+  if (form.value.value > 99) {
+    form.value.value = 99;
   }
 };
 
@@ -113,13 +145,13 @@ onBeforeUnmount(() => {
             <option
                 v-for="product in products.productVariantsListAll.data"
                 :value="product.id">
-              {{ product.product.title.ru }}
+              {{ product.product.title.ru }} - {{ product.value }}кг
             </option>
           </select>
         </div>
         <div
             v-if="users.userListAll"
-            :class="{ '!border !border-red-500': v$.user_id.$error }"
+            :class="{ '!border !border-red-500': v$.user_ids.$error }"
             class="mb-2 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <label
               for="name"
@@ -127,7 +159,7 @@ onBeforeUnmount(() => {
             Пользователь
           </label>
           <select
-              v-model="form.user_id"
+              @change="handleUserChange($event)"
               class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
               name=""
               id="">
@@ -138,6 +170,21 @@ onBeforeUnmount(() => {
               {{ user.name }}
             </option>
           </select>
+          <div
+              v-if="selectedUsers.length > 0"
+              class="mt-2 flex flex-wrap gap-2">
+            <div
+                v-for="(user, ind) in selectedUsers"
+                :key="ind"
+                class="text-xs font-light bg-gray-200 w-max px-3 py-1 rounded-md flex items-center gap-1"
+            >
+              <p>{{ user.name }}</p>
+              <XMarkIcon
+                  @click="selectedUsers.splice(ind, 1); form.value.user_ids.splice(ind, 1)"
+                  class="text-red-500 w-3 h-3 cursor-pointer"
+              />
+            </div>
+          </div>
         </div>
         <div
             :class="{ '!border !border-red-500': v$.title.$error }"
@@ -205,9 +252,12 @@ onBeforeUnmount(() => {
               id="name"
               class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
               placeholder="Величина скидки в %"
+              max="99"
+              @input="validateDiscount"
           />
         </div>
-        <div class="mb-2 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+        <div
+            class="mb-2 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <label
               for="name"
               class="block text-xs font-medium text-gray-900">

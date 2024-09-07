@@ -5,6 +5,7 @@ import TableComponent from "@/components/TableComponent.vue";
 import {useProductsStore} from "@/stores/products.js";
 import {storeToRefs} from "pinia";
 import {useModalsStore} from "@/stores/modals.js";
+import UploadExcel from "@/components/uploadExcel.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -65,15 +66,15 @@ watch(route.query, async () => {
           </p>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 flex gap-3">
-          <div class="flex items-center gap-1 rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+          <div
+              @click="products.downloadVariants()"
+              class="cursor-pointer flex items-center gap-1 rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
             <img class="w-7 h-7" src="@/assets/img/logos/excel.png" alt="">
             <p>
               Скачать
             </p>
           </div>
-          <div class="flex items-center rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
-            Импортировать
-          </div>
+          <UploadExcel />
         </div>
       </div>
       <TableComponent

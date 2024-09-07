@@ -185,6 +185,7 @@ watch(() => form.value.category_id, async () => {
     newElementsForm.value.push(elementCopy);
   });
   form.value.filter_data = []
+  await setQuery({target: {value: ''}}, 0)
 }, {deep: true});
 
 const setQuery = async (event, index) => {

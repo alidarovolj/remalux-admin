@@ -5,20 +5,22 @@ import {storeToRefs} from "pinia";
 import {useModalsStore} from "@/stores/modals.js";
 import TableComponent from "@/components/TableComponent.vue";
 import {useOrdersStore} from "@/stores/orders.js";
+import {usePartnersStore} from "@/stores/partners.js";
 
 const route = useRoute();
 const router = useRouter();
 const modals = useModalsStore()
 
-const orders = useOrdersStore()
-const {ordersList} = storeToRefs(orders)
+const partners = usePartnersStore()
+const {partnersList} = storeToRefs(partners)
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
-  {name: "Продукты", fn: "order_items", type: "product_array"},
-  {name: "Оплачен", fn: "is_paid", type: "boolean"},
-  {name: "Статус", fn: "status", type: "borders"},
-  {name: "Цена", fn: "total_amount", type: "string"}
+  {name: "Название", fn: "name", type: "string"},
+  {name: "Номер телефона", fn: "phone_number", type: "string"},
+  {name: "БИН", fn: "bin", type: "string"},
+  {name: "Email", fn: "email", type: "string"},
+  {name: "Город", fn: "city.title.ru", type: "string"},
 ])
 
 const page = ref(route.query.page || 1);
@@ -36,7 +38,7 @@ watch([page, perPage], updateQueryParams, {deep: true});
 
 const fetchData = async () => {
   try {
-    await orders.getOrders()
+    await partners.getPartners()
   } catch (error) {
     console.error(error);
   }
@@ -51,22 +53,17 @@ onMounted(fetchData);
       <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
           <h1 class="text-2xl font-semibold leading-6 text-gray-900">
-            Заказы
+            Партнеры
           </h1>
           <p class="mt-2 text-sm text-gray-700">
-            Список всех заказов компании.
+            Спикос всех партнеров
           </p>
         </div>
       </div>
       <TableComponent
           :tableData="tableData"
-          :fetchedData="ordersList"
-          link="orders"
-          :update-order-status="true"
-          :update-order-payment="true"
+          :fetchedData="partnersList"
           @call_to_refresh="fetchData"
-          @updateOrderStatus="(data) => modals.showModal('UpdateOrderStatus', data)"
-          @updateOrderPayment="(data) => modals.showModal('UpdateOrderPayment', data)"
       >
       </TableComponent>
 

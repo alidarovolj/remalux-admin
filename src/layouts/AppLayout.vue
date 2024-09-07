@@ -8,7 +8,7 @@ import {
   CircleStackIcon,
   DocumentDuplicateIcon,
   FolderIcon,
-  HomeIcon,
+  BriefcaseIcon,
   LightBulbIcon,
   NewspaperIcon,
   AdjustmentsHorizontalIcon,
@@ -27,7 +27,6 @@ import Footer from "@/components/Footer.vue";
 const route = useRoute()
 
 const navigation = [
-  {name: 'Главная панель', href: '/', icon: HomeIcon, alias: 'Dashboard', children: []},
   {name: 'Пользователи', href: '/users', icon: UsersIcon, alias: 'Users', children: []},
   {name: 'Заказы', href: '/orders', icon: TruckIcon, alias: 'Orders', children: []},
   {
@@ -46,6 +45,7 @@ const navigation = [
       {name: 'Подписчики на рассылку', href: '/news/subscriptions', icon: EnvelopeIcon, alias: 'Subscriptions', children: []},
     ]
   },
+  {name: 'Партнеры', href: '/partners', icon: BriefcaseIcon, alias: 'Partners', children: []},
   {name: 'Контакты', href: '/contacts', icon: HomeModernIcon, alias: 'Contacts', children: []},
   // {name: 'Статистика', href: '#', icon: ChartPieIcon, alias: 'Statistics', children: []},
 ]

@@ -16,6 +16,7 @@ import PaginationBlock from "@/components/PaginationBlock.vue";
 import {useRoute, useRouter} from "vue-router";
 import {nextTick, onMounted, ref, watch} from "vue";
 import {formatDate} from "@/utils/formatDate.js";
+import {formatPhoneNumber} from "@/utils/formatPhoneNumber.js"
 
 const searchValue = ref('')
 
@@ -116,7 +117,7 @@ watch(() => route.query.searchKeyword, () => {
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
             <tr
-                v-for="(item, index) in (fetchedData.data && fetchedData.data.length ? fetchedData.data.slice().reverse() : fetchedData.slice().reverse())"
+                v-for="(item, index) in (Array.isArray(fetchedData?.data) && fetchedData?.data.length ? fetchedData.data.slice().reverse() : fetchedData?.slice?.().reverse())"
                 :key="index"
                 class="even:bg-gray-50 cursor-pointer">
               <td
@@ -125,20 +126,30 @@ watch(() => route.query.searchKeyword, () => {
                   @click="link ? router.push('/' + link + '/' + item.id) : null"
                   class="whitespace-nowrap pl-4 py-5 text-sm text-gray-500"
               >
-                <p
-                    v-if="it.type === 'string' && getNestedProperty(item, it.fn)"
-                    v-html="getNestedProperty(item, it.fn)">
+                <p v-if="getNestedProperty(item, it.fn) && it.type === 'string' && it.name === 'Номер телефона'">
+                  {{ formatPhoneNumber(getNestedProperty(item, it.fn)) }}
+                </p>
+                <p v-else-if="it.type === 'string' && getNestedProperty(item, it.fn)" v-html="getNestedProperty(item, it.fn)">
                 </p>
                 <p
                     v-else-if="it.type === 'string' && !getNestedProperty(item, it.fn)"
                     class="text-red-500">
                   Нет данных
                 </p>
-                <p
+                <div
                     v-else-if="it.type === 'borders'"
-                    class="bg-green-100 text-green-500 w-max px-4 py-2 rounded-xl uppercase">
-                  {{ getNestedProperty(item, it.fn) }}
-                </p>
+                    :class="[
+                        { 'bg-green-100 text-green-500' : getNestedProperty(item, it.fn) === 'ended' },
+                        { 'bg-blue-100 text-blue-500' : getNestedProperty(item, it.fn) === 'created' },
+                        { 'bg-orange-100 text-orange-500' : getNestedProperty(item, it.fn) === 'in_process' }
+                    ]"
+                    class="w-max px-4 py-2 rounded-xl capitalize"
+                >
+                  <span v-if="getNestedProperty(item, it.fn) === 'created'">Создан</span>
+                  <span v-else-if="getNestedProperty(item, it.fn) === 'ended'">Окончен</span>
+                  <span v-else-if="getNestedProperty(item, it.fn) === 'in_process'">В процессе</span>
+                  <span v-else>{{ getNestedProperty(item, it.fn) }}</span>
+                </div>
                 <div
                     v-else-if="it.type === 'array'"
                     class="bg-green-100 text-green-500 w-max px-4 py-2 rounded-xl">

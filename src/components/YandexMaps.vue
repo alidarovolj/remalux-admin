@@ -31,8 +31,8 @@ export default {
     initMap(ymaps) {
       ymaps.ready(() => {
         this.map = new ymaps.Map('map', {
-          center: this.$props.location ? [this.$props.location.latitude, this.$props.location.longitude] : [43.273564, 76.914851],
-          zoom: 10,
+          center: this.$props.location ? [this.$props.location.longitude, this.$props.location.latitude] : [43.273564, 76.914851],
+          zoom: 15,
           controls: ['zoomControl', 'searchControl'],
         });
 

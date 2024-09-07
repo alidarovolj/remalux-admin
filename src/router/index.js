@@ -24,6 +24,7 @@ import ordersView from "@/views/orders/index.vue";
 import ordersDetail from "@/views/orders/[id]/index.vue";
 import discountsView from "@/views/discounts/index.vue";
 import subscriptionsView from "@/views/news_subscribers/index.vue";
+import partnersView from "@/views/partners/index.vue";
 
 const routes = [
     {
@@ -35,6 +36,11 @@ const routes = [
         path: '/discounts',
         name: "Discounts",
         component: discountsView
+    },
+    {
+        path: '/partners',
+        name: "Partners",
+        component: partnersView
     },
     {
         path: '/news/subscriptions',

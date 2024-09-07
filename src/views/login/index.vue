@@ -32,7 +32,7 @@ const authorizeUser = async () => {
     await user.authUser(form.value)
     notifications.showNotification("success", "Успешная авторизация!", "Вы успешно авторизовались в системе, дождитесь перенаправления на главную страницу.");
     localStorage.setItem("token", user.authorizedUser.access_token);
-    await router.push({name: "Dashboard"});
+    await router.push({name: "Users"});
   } catch (e) {
     notifications.showNotification("error", "Произошла ошибка", e);
   }
@@ -67,9 +67,6 @@ const authorizeUser = async () => {
           <div>
             <div class="flex items-center justify-between">
               <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Пароль</label>
-              <div class="text-sm">
-                <a href="#" class="font-semibold text-linkColor hover:text-mainColor transition-all">Забыли пароль?</a>
-              </div>
             </div>
             <div class="mt-2">
               <input
@@ -90,10 +87,6 @@ const authorizeUser = async () => {
             </button>
           </div>
         </form>
-        <p class="mt-10 text-center text-sm text-gray-500">
-          Забыли пароль? <a href="#" class="font-semibold leading-6 text-linkColor hover:text-mainColor transition-all">Восстановите
-          его здесь</a>
-        </p>
       </div>
     </div>
   </div>

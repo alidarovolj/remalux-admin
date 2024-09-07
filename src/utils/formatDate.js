@@ -12,5 +12,5 @@ export function formatDate(isoDate) {
     };
 
     // Используем toLocaleString для форматирования
-    return date.toLocaleString("en-US", options);
+    return date.toLocaleString("ru-RU", options);
 }
