@@ -15,8 +15,7 @@ const {newsSubscribers} = storeToRefs(news)
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
-  {name: "Название", fn: "title.ru", type: "string"},
-  {name: "Категория", fn: "category.ru", type: "string"},
+  {name: "Email", fn: "email", type: "string"}
 ])
 
 const page = ref(route.query.page || 1);

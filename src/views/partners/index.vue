@@ -56,7 +56,7 @@ onMounted(fetchData);
             Партнеры
           </h1>
           <p class="mt-2 text-sm text-gray-700">
-            Спикос всех партнеров
+            Список всех партнеров
           </p>
         </div>
       </div>

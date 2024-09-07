@@ -17,7 +17,6 @@ const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
   {name: "Картинка", fn: "image_url", type: "image"},
   {name: "Название", fn: "title.ru", type: "string"},
-  {name: "Категория", fn: "category.ru", type: "string"},
   {name: "Дата", fn: "created_at", type: "time"}
 ])
 

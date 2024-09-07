@@ -10,6 +10,7 @@ export const useContactsStore = defineStore('contacts', () => {
     const createdContact = ref(null);
     const removedContact = ref(null);
     const detailContact = ref(null);
+    const editedContact = ref(null);
     const notifications = useNotificationStore();
     const route = useRoute();
 
@@ -19,6 +20,7 @@ export const useContactsStore = defineStore('contacts', () => {
         createdContact,
         removedContact,
         detailContact,
+        editedContact,
         async getContacts() {
             try {
                 const response = await api(`/api/admin/contacts/`, "GET", {}, route.query);
@@ -53,6 +55,17 @@ export const useContactsStore = defineStore('contacts', () => {
                 }, route.query);
                 
                 createdContact.value = response;
+            } catch (e) {
+                notifications.showNotification("error", "Произошла ошибка", e);
+            }
+        },
+        async editContact(id, body) {
+            try {
+                const response = await api(`/api/admin/contacts/${id}`, "PUT", {
+                    body: JSON.stringify(body)
+                }, route.query);
+
+                editedContact.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

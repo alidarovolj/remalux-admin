@@ -41,7 +41,6 @@ const navigation = [
   {name: 'Идеи', href: '/ideas', icon: LightBulbIcon, alias: 'Ideas', children: []},
   {
     name: 'Новости', href: '/news', icon: NewspaperIcon, alias: 'News', children: [
-      {name: 'Категории', href: '/news/categories', icon: ChatBubbleLeftIcon, alias: 'NewsCategories', children: []},
       {name: 'Подписчики на рассылку', href: '/news/subscriptions', icon: EnvelopeIcon, alias: 'Subscriptions', children: []},
     ]
   },

@@ -1,5 +1,5 @@
 <script setup>
-import {nextTick, onMounted, ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useVuelidate} from "@vuelidate/core";
 import {required} from "@vuelidate/validators";
@@ -34,8 +34,7 @@ const form = ref({
     ru: "",
     en: "",
     kz: ""
-  },
-  category_id: null
+  }
 });
 
 const options = ref({
@@ -63,8 +62,7 @@ const v$ = useVuelidate({
   content: {
     ru: {required},
   },
-  image_url: {required},
-  category_id: {required}
+  image_url: {required}
 }, form);
 
 const page = ref(route.query.page || 1);
@@ -79,15 +77,6 @@ onMounted(() => {
 });
 
 watch([page, perPage], updateQueryParams, {deep: true});
-
-const fetchData = async () => {
-  try {
-    await nextTick()
-    await news.getNewsCategories()
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 const createNews = async () => {
   loading.value = true;
@@ -112,10 +101,6 @@ const createNews = async () => {
     loading.value = false;
   }
 };
-
-onMounted(fetchData);
-
-watch([page, perPage], fetchData);
 </script>
 
 <template>
@@ -157,27 +142,6 @@ watch([page, perPage], fetchData);
                 type="news"
                 @photoUploaded="(image) => form.image_url = image"
             />
-            <div
-                v-if="news.newsCategories"
-                :class="{ '!border-red-500': v$.category_id.$error }"
-                class="mb-3 text-xs p-3 border rounded-md">
-              <p class="block font-medium text-gray-900 mb-2">
-                Категория
-              </p>
-              <select
-                  v-model="form.category_id"
-                  name=""
-                  id=""
-                  class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6">
-                <option :value="null">Выберите категорию</option>
-                <option
-                    v-for="(item, index) of news.newsCategories.data"
-                    :key="index"
-                    :value="item.id">
-                  {{ item.title.ru }}
-                </option>
-              </select>
-            </div>
             <div class="rounded-md px-3 pb-1.5 pt-2.5 border mb-3">
               <div class="flex gap-3 mb-3 text-sm">
                 <p
