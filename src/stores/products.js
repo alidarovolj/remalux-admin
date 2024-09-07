@@ -3,7 +3,7 @@ import {ref} from 'vue';
 import {api} from "@/utils/axios.js";
 import {useNotificationStore} from "@/stores/notifications.js";
 import {useRoute} from "vue-router";
-
+import axios from "axios";
 
 export const useProductsStore = defineStore('products', () => {
     const route = useRoute();
@@ -19,6 +19,7 @@ export const useProductsStore = defineStore('products', () => {
     const changedVariantRemains = ref(null);
     const downloadedVariants = ref(null);
     const uploadedVariants = ref(null);
+    const token = ref(localStorage.getItem('token'));
     const notifications = useNotificationStore()
 
     return {
@@ -37,7 +38,7 @@ export const useProductsStore = defineStore('products', () => {
         async getProductsList() {
             try {
                 const response = await api(`/api/admin/products/`, "GET", {}, route.query);
-                
+
                 productsList.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
@@ -45,7 +46,7 @@ export const useProductsStore = defineStore('products', () => {
         },
         async getProductVariantsList(search) {
             try {
-                if(!search) {
+                if (!search) {
                     const response = await api(`/api/admin/product-variants/`, "GET", {}, route.query);
                     productVariantsList.value = response;
                 } else {
@@ -71,7 +72,7 @@ export const useProductsStore = defineStore('products', () => {
                 const response = await api(`api/admin/products`, "POST", {
                     body: JSON.stringify(form)
                 }, route.query);
-                
+
                 createdProduct.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
@@ -80,7 +81,7 @@ export const useProductsStore = defineStore('products', () => {
         async detailProduct(id, form) {
             try {
                 const response = await api(`api/admin/products/${id}`, "GET");
-                
+
                 detailProductResult.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
@@ -91,7 +92,7 @@ export const useProductsStore = defineStore('products', () => {
                 const response = await api(`api/admin/products/${id}`, "PUT", {
                     body: JSON.stringify(form)
                 }, route.query);
-                
+
                 editedProduct.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
@@ -102,7 +103,7 @@ export const useProductsStore = defineStore('products', () => {
                 const response = await api(`api/admin/products/${id}`, "PATCH", {
                     body: JSON.stringify(form)
                 }, route.query);
-                
+
                 activeResult.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
@@ -111,7 +112,7 @@ export const useProductsStore = defineStore('products', () => {
         async removeProduct(id) {
             try {
                 const response = await api(`api/admin/products/${id}`, "DELETE", {}, route.query);
-                
+
                 removedProduct.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
@@ -122,7 +123,7 @@ export const useProductsStore = defineStore('products', () => {
                 const response = await api(`api/admin/product-variants/${id}/prices`, "PATCH", {
                     body: JSON.stringify(form)
                 }, route.query);
-                
+
                 changedVariantPrice.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
@@ -133,7 +134,7 @@ export const useProductsStore = defineStore('products', () => {
                 const response = await api(`api/admin/product-variants/${id}/remains`, "PATCH", {
                     body: JSON.stringify(form)
                 }, route.query);
-                
+
                 changedVariantRemains.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
@@ -141,23 +142,25 @@ export const useProductsStore = defineStore('products', () => {
         },
         async downloadVariants() {
             try {
-                // Выполняем запрос на скачивание
-                const response = await api(`api/admin/product-variants/download`, "GET", {}, route.query, { responseType: 'blob' });
+                const response = await axios.get(import.meta.env.VITE_APP_BASE_URL + '/api/admin/product-variants/download', {
+                    responseType: 'blob',
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token.value}`,
+                    }
+                });
 
-                // Создаем Blob из ответа
-                const blob = new Blob([response], { type: 'application/octet-stream' });
+                const blob = new Blob([response.data], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
 
-                // Создаем URL для этого Blob
                 const url = window.URL.createObjectURL(blob);
-
-                // Создаем ссылку и симулируем клик для скачивания файла
                 const link = document.createElement('a');
                 link.href = url;
-                link.setAttribute('download', 'variants.xlsx'); // Указываем имя файла, которое будет при скачивании
+                link.setAttribute('download', 'variants.xlsx');
                 document.body.appendChild(link);
                 link.click();
 
-                // Очищаем объект URL
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(link);
 
