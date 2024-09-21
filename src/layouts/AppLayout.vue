@@ -4,7 +4,7 @@ import {ref} from "vue";
 import {Dialog, DialogPanel, TransitionChild, TransitionRoot} from '@headlessui/vue'
 import {
   Bars3Icon,
-  ChatBubbleLeftIcon,
+  QuestionMarkCircleIcon,
   CircleStackIcon,
   DocumentDuplicateIcon,
   FolderIcon,
@@ -18,7 +18,8 @@ import {
   TruckIcon,
   HomeModernIcon,
   CreditCardIcon,
-    EnvelopeIcon
+    EnvelopeIcon,
+    WrenchScrewdriverIcon
 } from '@heroicons/vue/24/outline'
 import {RouterLink, useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
@@ -45,6 +46,8 @@ const navigation = [
     ]
   },
   {name: 'Партнеры', href: '/partners', icon: BriefcaseIcon, alias: 'Partners', children: []},
+  {name: 'FAQ', href: '/faq', icon: QuestionMarkCircleIcon, alias: 'FAQ', children: []},
+  {name: 'Проекты', href: '/projects', icon: WrenchScrewdriverIcon, alias: 'Projects', children: []},
   {name: 'Контакты', href: '/contacts', icon: HomeModernIcon, alias: 'Contacts', children: []},
   // {name: 'Статистика', href: '#', icon: ChartPieIcon, alias: 'Statistics', children: []},
 ]

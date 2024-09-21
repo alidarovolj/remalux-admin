@@ -10,7 +10,7 @@ import {
   UserMinusIcon,
   UserPlusIcon,
   UsersIcon,
-  XMarkIcon
+  XMarkIcon,
 } from "@heroicons/vue/24/outline"
 import PaginationBlock from "@/components/PaginationBlock.vue";
 import {useRoute, useRouter} from "vue-router";
@@ -20,8 +20,8 @@ import {formatPhoneNumber} from "@/utils/formatPhoneNumber.js"
 
 const searchValue = ref('')
 
-const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive', 'search', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment', 'link']);
-const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem', 'setActive', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment']);
+const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive', 'search', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment', 'link', 'answerQuestion']);
+const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem', 'setActive', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment', 'answerQuestion']);
 
 const route = useRoute();
 const router = useRouter();
@@ -106,7 +106,7 @@ watch(() => route.query.searchKeyword, () => {
                 {{ item.name }}
               </th>
               <th
-                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment"
+                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment || answerQuestion"
                   scope="col"
                   class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
                 <p>
@@ -169,6 +169,17 @@ watch(() => route.query.searchKeyword, () => {
                   </p>
                 </div>
                 <div
+                    v-else-if="it.type === 'images_array'"
+                    class="w-max flex gap-2">
+                  <img
+                      v-for="(arrItem, arrIndex) of getNestedProperty(item, it.fn)"
+                      :key="arrIndex"
+                      class="w-10 h-10 min-h-10 min-w-10 object-cover rounded-md"
+                      :src="arrItem"
+                      alt=""
+                  >
+                </div>
+                <div
                     v-else-if="it.type === 'boolean'"
                     class="text-xs"
                 >
@@ -207,7 +218,7 @@ watch(() => route.query.searchKeyword, () => {
                 </div>
               </td>
               <td
-                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment"
+                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment || answerQuestion"
                   class="pl-4 py-5 whitespace-nowrap pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8 flex gap-1 relative z-20">
                 <p
                     v-if="edit"
@@ -264,6 +275,12 @@ watch(() => route.query.searchKeyword, () => {
                     @click="emit('updateOrderPayment', item)"
                     class="text-mainColor cursor-pointer w-max">
                   <CircleStackIcon class="w-5 h-5"/>
+                </p>
+                <p
+                    v-if="answerQuestion"
+                    @click="emit('answerQuestion', item)"
+                    class="text-mainColor cursor-pointer w-max">
+                  <CheckIcon class="w-5 h-5"/>
                 </p>
               </td>
             </tr>

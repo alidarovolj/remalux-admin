@@ -25,12 +25,24 @@ import ordersDetail from "@/views/orders/[id]/index.vue";
 import discountsView from "@/views/discounts/index.vue";
 import subscriptionsView from "@/views/news_subscribers/index.vue";
 import partnersView from "@/views/partners/index.vue";
+import faqView from "@/views/questions/index.vue";
+import projectsView from "@/views/projects/index.vue";
 
 const routes = [
     {
         path: '/login',
         name: "Login",
         component: loginView
+    },
+    {
+        path: '/faq',
+        name: "FAQ",
+        component: faqView
+    },
+    {
+        path: '/projects',
+        name: "Projects",
+        component: projectsView
     },
     {
         path: '/discounts',
