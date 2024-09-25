@@ -180,6 +180,17 @@ watch(() => route.query.searchKeyword, () => {
                   >
                 </div>
                 <div
+                    v-else-if="it.type === 'images_array_2'"
+                    class="w-max flex gap-2">
+                  <img
+                      v-for="(arrItem, arrIndex) of getNestedProperty(item, it.fn)"
+                      :key="arrIndex"
+                      class="w-10 h-10 min-h-10 min-w-10 object-cover rounded-md"
+                      :src="arrItem.image_url"
+                      alt=""
+                  >
+                </div>
+                <div
                     v-else-if="it.type === 'boolean'"
                     class="text-xs"
                 >

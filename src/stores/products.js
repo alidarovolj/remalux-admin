@@ -19,6 +19,8 @@ export const useProductsStore = defineStore('products', () => {
     const changedVariantRemains = ref(null);
     const downloadedVariants = ref(null);
     const uploadedVariants = ref(null);
+    const productsReviews = ref(null);
+    const verifiedProduct = ref(null);
     const token = ref(localStorage.getItem('token'));
     const notifications = useNotificationStore()
 
@@ -35,11 +37,31 @@ export const useProductsStore = defineStore('products', () => {
         changedVariantRemains,
         downloadedVariants,
         uploadedVariants,
+        productsReviews,
+        verifiedProduct,
         async getProductsList() {
             try {
                 const response = await api(`/api/admin/products/`, "GET", {}, route.query);
 
                 productsList.value = response;
+            } catch (e) {
+                notifications.showNotification("error", "Произошла ошибка", e);
+            }
+        },
+        async getReviewsList() {
+            try {
+                const response = await api(`/api/admin/reviews`, "GET", {}, route.query);
+
+                productsReviews.value = response;
+            } catch (e) {
+                notifications.showNotification("error", "Произошла ошибка", e);
+            }
+        },
+        async verifyReview(id, val) {
+            try {
+                const response = await api(`/api/admin/reviews/${id}?is_verified=${val}`, "PATCH", {}, route.query);
+
+                verifiedProduct.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

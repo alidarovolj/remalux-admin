@@ -19,7 +19,8 @@ import {
   HomeModernIcon,
   CreditCardIcon,
     EnvelopeIcon,
-    WrenchScrewdriverIcon
+    WrenchScrewdriverIcon,
+    ChartPieIcon
 } from '@heroicons/vue/24/outline'
 import {RouterLink, useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
@@ -36,7 +37,8 @@ const navigation = [
       {name: 'Бренды', href: '/brands', icon: DocumentDuplicateIcon, alias: 'Brands', children: []},
       {name: 'Категории', href: '/categories', icon: TagIcon, alias: 'Categories', children: []},
       {name: 'Фильтры', href: '/filters', icon: AdjustmentsHorizontalIcon, alias: 'Filters', children: []},
-      {name: 'Скидки', href: '/discounts', icon: CreditCardIcon, alias: 'Discounts', children: []}
+      {name: 'Скидки', href: '/discounts', icon: CreditCardIcon, alias: 'Discounts', children: []},
+      {name: 'Отзывы', href: '/products/reviews', icon: ChartPieIcon, alias: 'ProductsReviews', children: []}
     ]
   },
   {name: 'Идеи', href: '/ideas', icon: LightBulbIcon, alias: 'Ideas', children: []},

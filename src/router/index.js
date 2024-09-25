@@ -27,6 +27,7 @@ import subscriptionsView from "@/views/news_subscribers/index.vue";
 import partnersView from "@/views/partners/index.vue";
 import faqView from "@/views/questions/index.vue";
 import projectsView from "@/views/projects/index.vue";
+import productReviewsView from "@/views/products/reviews/index.vue";
 
 const routes = [
     {
@@ -142,6 +143,12 @@ const routes = [
         path: '/products/variants',
         name: "ProductsVariants",
         component: productVariantsView,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: '/products/reviews',
+        name: "ProductsReviews",
+        component: productReviewsView,
         meta: {requiresAuth: true}
     },
     {
