@@ -19,7 +19,7 @@ const tableData = ref([
   {name: "Имя", fn: "name", type: "string"},
   {name: "Email", fn: "email", type: "string"},
   {name: "Номер телефона", fn: "phone_number", type: "string"},
-  {name: "Администратор", fn: "is_admin", type: "boolean"}
+  {name: "Роль", fn: "role.name", type: "string"}
 ]);
 
 const page = ref(route.query.page || 1);

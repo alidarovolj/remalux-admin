@@ -32,7 +32,7 @@ const authorizeUser = async () => {
     await user.authUser(form.value)
     notifications.showNotification("success", "Успешная авторизация!", "Вы успешно авторизовались в системе, дождитесь перенаправления на главную страницу.");
     localStorage.setItem("token", user.authorizedUser.access_token);
-    await router.push({name: "Users"});
+    await router.push({name: "MainPage"});
   } catch (e) {
     notifications.showNotification("error", "Произошла ошибка", e);
   }

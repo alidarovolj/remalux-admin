@@ -1,4 +1,4 @@
-import {createWebHistory, createRouter} from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
 
 import loginView from '@/views/login/index.vue'
 import usersView from '@/views/users/index.vue'
@@ -7,7 +7,6 @@ import productsView from "@/views/products/index.vue";
 import productCreate from "@/views/products/create/index.vue";
 import categoriesView from "@/views/categories/index.vue";
 import productsEdit from "@/views/products/edit/index.vue";
-import brandsView from "@/views/brands/index.vue";
 import ideasView from "@/views/ideas/index.vue";
 import ideasCreate from "@/views/ideas/create/index.vue";
 import filtersView from "@/views/filters/index.vue";
@@ -28,6 +27,7 @@ import partnersView from "@/views/partners/index.vue";
 import faqView from "@/views/questions/index.vue";
 import projectsView from "@/views/projects/index.vue";
 import productReviewsView from "@/views/products/reviews/index.vue";
+import {useUsersStore} from "@/stores/users.js";
 
 const routes = [
     {
@@ -38,169 +38,267 @@ const routes = [
     {
         path: '/faq',
         name: "FAQ",
-        component: faqView
+        component: faqView,
+        meta: {
+            requiresAuth: true,
+            section: 'faq',
+        }
     },
     {
         path: '/projects',
         name: "Projects",
-        component: projectsView
+        component: projectsView,
+        meta: {
+            requiresAuth: true,
+            section: 'projects',
+        }
     },
     {
         path: '/discounts',
         name: "Discounts",
-        component: discountsView
+        component: discountsView,
+        meta: {
+            requiresAuth: true,
+            section: 'products',
+        }
     },
     {
         path: '/partners',
         name: "Partners",
-        component: partnersView
+        component: partnersView,
+        meta: {
+            requiresAuth: true,
+            section: 'partners',
+        }
     },
     {
         path: '/news/subscriptions',
         name: "Subscriptions",
-        component: subscriptionsView
+        component: subscriptionsView,
+        meta: {
+            requiresAuth: true,
+            section: 'news',
+        }
     },
     {
         path: '/orders',
         name: "Orders",
-        component: ordersView
+        component: ordersView,
+        meta: {
+            requiresAuth: true,
+            section: 'orders',
+        }
     },
     {
         path: '/orders/:id',
         name: "OrdersDetail",
-        component: ordersDetail
+        component: ordersDetail,
+        meta: {
+            requiresAuth: true,
+            section: 'orders',
+        }
     },
     {
         path: '/contacts',
         name: "Contacts",
-        component: contactsView
+        component: contactsView,
+        meta: {
+            requiresAuth: true,
+            section: 'contacts',
+        }
     },
     {
         path: '/contacts/create',
         name: "CreateContacts",
-        component: contactsCreate
+        component: contactsCreate,
+        meta: {
+            requiresAuth: true,
+            section: 'contacts',
+        }
     },
     {
         path: '/contacts/edit/:id',
         name: "EditContacts",
-        component: contactsEdit
+        component: contactsEdit,
+        meta: {
+            requiresAuth: true,
+            section: 'contacts',
+        }
     },
     {
         path: '/',
-        name: "Dashboard",
+        name: "MainPage",
         component: dashboardView,
-        meta: {requiresAuth: true}
     },
     {
         path: '/users',
         name: "Users",
         component: usersView,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'users',
+        }
     },
     {
         path: '/categories',
         name: "Categories",
         component: categoriesView,
-        meta: {requiresAuth: true}
-    },
-    {
-        path: '/brands',
-        name: "Brands",
-        component: brandsView,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'categories',
+        }
     },
     {
         path: '/ideas',
         name: "Ideas",
         component: ideasView,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'ideas'
+        }
     },
     {
         path: '/ideas/create',
         name: "IdeasCreate",
         component: ideasCreate,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'ideas',
+        }
     },
     {
         path: '/ideas/edit/:id',
         name: "IdeasEdit",
         component: ideasEdit,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'ideas',
+        }
     },
     {
         path: '/products',
         name: "Products",
         component: productsView,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'products',
+        }
     },
     {
         path: '/filters',
         name: "Filters",
         component: filtersView,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'filters',
+        }
     },
     {
         path: '/products/variants',
         name: "ProductsVariants",
         component: productVariantsView,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'variants',
+        }
     },
     {
         path: '/products/reviews',
         name: "ProductsReviews",
         component: productReviewsView,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'reviews',
+        }
     },
     {
         path: '/products/edit/:id',
         name: "ProductsEdit",
         component: productsEdit,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'products'
+        }
     },
     {
         path: '/products/create',
         name: "ProductsCreate",
         component: productCreate,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'products',
+        }
     },
     {
         path: '/news',
         name: "News",
         component: newsView,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'news',
+        }
     },
     {
         path: '/news/create',
         name: "NewsCreate",
         component: newsCreate,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'news',
+        }
     },
     {
         path: '/news/categories',
         name: "NewsCategories",
         component: newsCategories,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'news',
+        }
     },
     {
         path: '/news/edit/:id',
         name: "NewsEdit",
         component: newsEdit,
-        meta: {requiresAuth: true}
+        meta: {
+            requiresAuth: true,
+            section: 'news',
+        }
     },
 ]
 
 const router = createRouter({
     history: createWebHistory(),
     routes,
-})
+});
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     const token = localStorage.getItem('token');
-    if (to.matched.some(record => record.meta.requiresAuth) && !token) {
-        next('/login');
+    const users = useUsersStore();
+
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (!token) {
+            return next('/login');
+        }
+
+        try {
+            if (!users.profileFetched) {
+                await users.getProfile();
+            }
+            const allowedSections = users.userProfile.sections;
+
+            if (allowedSections.includes(to.meta.section)) {
+                next();
+            } else {
+                next('/403');
+            }
+        } catch (error) {
+            console.error('Error fetching user profile:', error);
+            next('/login');
+        }
     } else {
         next();
     }
 });
 
-export default router
+export default router;

@@ -3,9 +3,11 @@ import {ref} from 'vue';
 import {api} from "@/utils/axios.js";
 import {useNotificationStore} from "@/stores/notifications.js";
 import {useRoute} from "vue-router";
+import router from "@/router/index.js";
 
 export const useUsersStore = defineStore('users', () => {
     const userProfile = ref(null);
+    const profileFetched = ref(false);
     const userList = ref(null);
     const userListAll = ref(null);
     const createdUser = ref(null);
@@ -14,6 +16,7 @@ export const useUsersStore = defineStore('users', () => {
     const changedPassword = ref(null);
     const removedUser = ref(null);
     const authorizedUser = ref(null);
+    const userLogout = ref(null);
     const notifications = useNotificationStore();
     const route = useRoute();
 
@@ -27,11 +30,25 @@ export const useUsersStore = defineStore('users', () => {
         changedPassword,
         removedUser,
         authorizedUser,
+        profileFetched,
+        userLogout,
         async getProfile() {
             try {
                 const response = await api(`/api/auth/me`, "GET", {}, route.query);
                 
                 userProfile.value = response;
+                profileFetched.value = true;
+            } catch (e) {
+                notifications.showNotification("error", "Произошла ошибка", e);
+            }
+        },
+        async logout() {
+            try {
+                const response = await api(`/api/auth/logout`, "POST", {}, route.query);
+
+                userLogout.value = response;
+                localStorage.removeItem("token");
+                router.push({name: "Login"});
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

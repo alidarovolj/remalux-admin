@@ -5,6 +5,7 @@ import {storeToRefs} from "pinia";
 import {useModalsStore} from "@/stores/modals.js";
 import TableComponent from "@/components/TableComponent.vue";
 import {useOrdersStore} from "@/stores/orders.js";
+import StatsBoard from "@/components/StatsBoard.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -47,14 +48,15 @@ onMounted(fetchData);
 
 <template>
   <div>
+    <StatsBoard />
     <div class="px-4 sm:px-6 lg:px-8">
       <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
           <h1 class="text-2xl font-semibold leading-6 text-gray-900">
-            Заказы
+            Главная
           </h1>
           <p class="mt-2 text-sm text-gray-700">
-            Список всех заказов компании.
+            Последние заказы и статистика
           </p>
         </div>
       </div>
