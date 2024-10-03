@@ -1,5 +1,5 @@
 <script setup>
-import {CheckIcon, XMarkIcon} from '@heroicons/vue/24/outline'
+import {CheckIcon} from '@heroicons/vue/24/outline'
 import {useModalsStore} from "@/stores/modals.js";
 import {ref} from "vue";
 import {useNotificationStore} from "@/stores/notifications.js";
@@ -18,10 +18,14 @@ const form = ref({
 const updateStatus = async () => {
   loading.value = true
 
-  if (modals.modal.modalData.status === 'created') {
+  if (modals.modal.modalData.status.code === 'pending') {
+    form.value.status = 'paid'
+  } else if (modals.modal.modalData.status.code === 'paid') {
     form.value.status = 'in_process'
-  } else if (modals.modal.modalData.status === 'in_process') {
-    form.value.status = 'ended'
+  } else if (modals.modal.modalData.status.code === 'in_process') {
+    form.value.status = 'delivery'
+  } else if (modals.modal.modalData.status.code === 'delivery') {
+    form.value.status = 'delivered'
   }
 
   try {
@@ -48,14 +52,29 @@ const updateStatus = async () => {
       </div>
       <div class="mt-3 text-center sm:mt-5">
         <p
-            v-if="modals.modal.modalData.status === 'created'"
+            v-if="modals.modal.modalData.status.code !== 'delivered'"
             class="text-base font-semibold leading-6 text-gray-900">
-          Хотите сменить статус заказа на <span class="text-mainColor">"в прогрессе"</span>
-        </p>
-        <p
-            v-if="modals.modal.modalData.status === 'in_process'"
-            class="text-base font-semibold leading-6 text-gray-900">
-          Хотите сменить статус заказа на <span class="text-mainColor">"завершенный"</span>
+          Хотите сменить статус заказа на
+          <span
+              v-if="modals.modal.modalData.status.code === 'pending'"
+              class="text-mainColor">
+            "Оплачен"
+          </span>
+          <span
+              v-if="modals.modal.modalData.status.code === 'paid'"
+              class="text-mainColor">
+            "В обработке"
+          </span>
+          <span
+              v-if="modals.modal.modalData.status.code === 'in_process'"
+              class="text-mainColor">
+            "Доставляется"
+          </span>
+          <span
+              v-if="modals.modal.modalData.status.code === 'delivery'"
+              class="text-mainColor">
+            "Доставлен"
+          </span>
         </p>
         <p
             v-else
@@ -78,7 +97,7 @@ const updateStatus = async () => {
         Отменить
       </button>
       <div
-          v-if="modals.modal.modalData.status !== 'ended'"
+          v-if="modals.modal.modalData.status.code !== 'delivered'"
           class="w-full">
         <button
             v-if="!loading"

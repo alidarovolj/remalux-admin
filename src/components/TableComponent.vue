@@ -137,6 +137,20 @@ watch(() => route.query.searchKeyword, () => {
                   Нет данных
                 </p>
                 <div
+                    v-else-if="it.type === 'statuses'"
+                    :class="[
+                        { 'bg-orange-100 text-orange-500' : item.status.code === 'pending' },
+                        { 'bg-yellow-100 text-yellow-500' : item.status.code === 'paid' },
+                        { 'bg-blue-100 text-blue-500' : item.status.code === 'in_process' },
+                        { 'bg-emerald-100 text-emerald-500' : item.status.code === 'delivery' },
+                        { 'bg-green-100 text-green-500' : item.status.code === 'delivered' },
+                        { 'bg-red-100 text-red-500' : item.status.code === 'cancelled' }
+                    ]"
+                    class="w-max px-4 py-2 rounded-xl capitalize"
+                >
+                  {{ item.status.title }}
+                </div>
+                <div
                     v-else-if="it.type === 'borders'"
                     :class="[
                         { 'bg-green-100 text-green-500' : getNestedProperty(item, it.fn) === 'ended' },

@@ -52,33 +52,18 @@ onMounted(async () => {
                     </p>
                     <div
                         :class="[
-                        { 'bg-green-100 text-green-500' : ordersDetail.status === 'ended' },
-                        { 'bg-blue-100 text-blue-500' : ordersDetail.status === 'created' },
-                        { 'bg-orange-100 text-orange-500' : ordersDetail.status === 'in_process' }
+                        { 'bg-orange-100 text-orange-500' : ordersDetail.status.code === 'pending' },
+                        { 'bg-yellow-100 text-yellow-500' : ordersDetail.status.code === 'paid' },
+                        { 'bg-blue-100 text-blue-500' : ordersDetail.status.code === 'in_process' },
+                        { 'bg-emerald-100 text-emerald-500' : ordersDetail.status.code === 'delivery' },
+                        { 'bg-green-100 text-green-500' : ordersDetail.status.code === 'delivered' },
+                        { 'bg-red-100 text-red-500' : ordersDetail.status.code === 'cancelled' }
                     ]"
-                        class="w-max px-4 py-2 rounded-md capitalize"
+                        class="w-max px-4 py-2 rounded-xl capitalize"
                     >
-                      <span v-if="ordersDetail.status === 'created'">Создан</span>
-                      <span v-else-if="ordersDetail.status === 'ended'">Окончен</span>
-                      <span v-else-if="ordersDetail.status === 'in_process'">В процессе</span>
-                      <span v-else>{{ ordersDetail.status }}</span>
+                      {{ ordersDetail.status.title }}
                     </div>
                   </div>
-                  <button
-                      v-if="ordersDetail.status !== 'ended'"
-                      type="button"
-                      class="inline-flex w-max justify-center rounded-md bg-mainColor px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:col-start-2"
-                      @click="modals.showModal('UpdateOrderStatus', ordersDetail)"
-                  >
-                    Сменить статус заказа
-                  </button>
-                  <button
-                      type="button"
-                      class="inline-flex w-max justify-center rounded-md bg-mainColor px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 sm:col-start-2"
-                      @click="modals.showModal('UpdateOrderPayment', ordersDetail)"
-                  >
-                    Сменить статус оплаты
-                  </button>
                 </div>
                 <div class="flex items-center w-full gap-3">
                   <p class="font-semibold">Дата создания заказа:</p>

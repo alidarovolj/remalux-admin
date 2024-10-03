@@ -18,7 +18,7 @@ const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
   {name: "Продукты", fn: "order_items", type: "product_array"},
   {name: "Оплачен", fn: "is_paid", type: "boolean"},
-  {name: "Статус", fn: "status", type: "borders"},
+  {name: "Статус", fn: "status.title", type: "borders"},
   {name: "Цена", fn: "total_amount", type: "string"}
 ])
 
