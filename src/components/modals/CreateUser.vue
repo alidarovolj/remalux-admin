@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from "vue";
+import {nextTick, onMounted, ref} from "vue";
 import {useVuelidate} from "@vuelidate/core";
 import {vMaska} from "maska/vue"
 import {email, required} from "@vuelidate/validators";
@@ -18,7 +18,8 @@ const form = ref({
   phone_number: "",
   email: "",
   password: "",
-  password_confirmation: ""
+  password_confirmation: "",
+  role_code: null
 });
 
 const v$ = useVuelidate({
@@ -26,7 +27,8 @@ const v$ = useVuelidate({
   phone_number: {required, minLength: 11},
   email: {required, email},
   password: {required},
-  password_confirmation: {required}
+  password_confirmation: {required},
+  role_code: {required}
 }, form);
 
 const createUser = async () => {
@@ -57,6 +59,11 @@ const createUser = async () => {
   }
   loading.value = false;
 };
+
+onMounted(async () => {
+  await nextTick()
+  await users.getRoles()
+})
 </script>
 
 <template>
@@ -123,6 +130,29 @@ const createUser = async () => {
               class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
               placeholder="example@example.com"
           />
+        </div>
+        <div
+            :class="{ '!border !border-red-500': v$.role_code.$error }"
+            class="mb-2 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+          <label
+              for="name"
+              class="block text-xs font-medium text-gray-900">
+            Роль
+          </label>
+          <select
+              v-model="form.role_code"
+              class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 bg-white"
+              name=""
+              id="">
+            <option :value="null">Выберите роль</option>
+            <option
+                v-for="(role, index) in users.rolesList"
+                :key="index"
+                :value="role.code"
+            >
+              {{ role.name }}
+            </option>
+          </select>
         </div>
         <div
             :class="{ '!border !border-red-500': v$.password.$error }"

@@ -285,9 +285,13 @@ router.beforeEach(async (to, from, next) => {
             if (!users.profileFetched) {
                 await users.getProfile();
             }
-            const allowedSections = users.userProfile.sections;
 
-            if (allowedSections.includes(to.meta.section)) {
+            const userProfile = users.userProfile;
+            const allowedSections = userProfile.sections;
+
+            if (userProfile.role && userProfile.role.code === 'admin') {
+                next();
+            } else if (allowedSections.includes(to.meta.section)) {
                 next();
             } else {
                 next('/403');

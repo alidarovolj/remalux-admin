@@ -16,13 +16,15 @@ const loading = ref(false);
 const formEdit = ref({
   name: "",
   phone_number: "",
-  email: ""
+  email: "",
+  role_code: null
 });
 
 const v$Edit = useVuelidate({
   name: {required},
   phone_number: {required, minLength: 11},
-  email: {required, email}
+  email: {required, email},
+  role_code: {required}
 }, formEdit);
 
 const editUser = async () => {
@@ -49,11 +51,12 @@ const editUser = async () => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
+  await users.getRoles()
   formEdit.value.name = modals.modal.modalData.name;
   formEdit.value.phone_number = modals.modal.modalData.phone_number;
-  console.log(modals.modal.modalData.phone_number.length)
   formEdit.value.email = modals.modal.modalData.email;
+  formEdit.value.role_code = modals.modal.modalData.role.code;
 })
 </script>
 
@@ -119,6 +122,27 @@ onMounted(() => {
           class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
           placeholder="example@example.com"
       />
+    </div>
+    <div class="mb-2 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+      <label
+          for="name"
+          class="block text-xs font-medium text-gray-900">
+        Роль
+      </label>
+      <select
+          v-model="formEdit.role_code"
+          class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 bg-white"
+          name=""
+          id="">
+        <option :value="null">Выберите роль</option>
+        <option
+            v-for="(role, index) in users.rolesList"
+            :key="index"
+            :value="role.code"
+        >
+          {{ role.name }}
+        </option>
+      </select>
     </div>
     <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
       <button

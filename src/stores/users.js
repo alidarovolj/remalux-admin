@@ -17,6 +17,7 @@ export const useUsersStore = defineStore('users', () => {
     const removedUser = ref(null);
     const authorizedUser = ref(null);
     const userLogout = ref(null);
+    const rolesList = ref(null);
     const notifications = useNotificationStore();
     const route = useRoute();
 
@@ -32,6 +33,7 @@ export const useUsersStore = defineStore('users', () => {
         authorizedUser,
         profileFetched,
         userLogout,
+        rolesList,
         async getProfile() {
             try {
                 const response = await api(`/api/auth/me`, "GET", {}, route.query);
@@ -69,6 +71,15 @@ export const useUsersStore = defineStore('users', () => {
                 const response = await api(`/api/admin/users`, "GET", {}, route.query);
                 
                 userList.value = response;
+            } catch (e) {
+                notifications.showNotification("error", "Произошла ошибка", e);
+            }
+        },
+        async getRoles() {
+            try {
+                const response = await api(`/api/admin/roles`, "GET", {}, route.query);
+
+                rolesList.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

@@ -326,8 +326,10 @@ watch([page, perPage], fetchData);
                         api-key="wbs5iypxhs4wvkwvvz760zl88zept4h3f91k4cxa8k57uwy4"
                         v-model="form.content.en"
                         :init="{
-        plugins: 'lists link image table code help wordcount'
-      }"
+                          selector: 'textarea',
+  plugins: 'media',
+  toolbar: 'media'
+                        }"
                     />
                   </main>
                 </div>

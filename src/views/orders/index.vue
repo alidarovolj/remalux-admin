@@ -16,7 +16,6 @@ const {ordersList} = storeToRefs(orders)
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
   {name: "Продукты", fn: "order_items", type: "product_array"},
-  {name: "Оплачен", fn: "is_paid", type: "boolean"},
   {name: "Статус", fn: "status", type: "statuses"},
   {name: "Менеджер", fn: "manager.name", type: "string"},
   {name: "Цена", fn: "total_amount", type: "string"}
@@ -64,10 +63,10 @@ onMounted(fetchData);
           :fetchedData="ordersList"
           link="orders"
           :update-order-status="true"
-          :update-order-payment="true"
+          :cancel-update-order-status="true"
           @call_to_refresh="fetchData"
           @updateOrderStatus="(data) => modals.showModal('UpdateOrderStatus', data)"
-          @updateOrderPayment="(data) => modals.showModal('UpdateOrderPayment', data)"
+          @cancelUpdateOrderStatus="(data) => modals.showModal('CancelUpdateOrderStatus', data)"
       >
       </TableComponent>
 

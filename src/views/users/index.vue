@@ -83,6 +83,7 @@ watch(route.query, async () => {
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
           <button
+              v-if="users.userProfile?.role?.code === 'admin'"
               @click="modals.showModal('CreateUser')"
               type="button"
               class="block rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">

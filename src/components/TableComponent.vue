@@ -17,14 +17,16 @@ import {useRoute, useRouter} from "vue-router";
 import {nextTick, onMounted, ref, watch} from "vue";
 import {formatDate} from "@/utils/formatDate.js";
 import {formatPhoneNumber} from "@/utils/formatPhoneNumber.js"
+import {useUsersStore} from "@/stores/users.js";
 
 const searchValue = ref('')
 
-const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive', 'search', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment', 'link', 'answerQuestion']);
-const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem', 'setActive', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment', 'answerQuestion']);
+const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive', 'search', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment', 'link', 'answerQuestion', 'cancelUpdateOrderStatus']);
+const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem', 'setActive', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment', 'answerQuestion', 'cancelUpdateOrderStatus']);
 
 const route = useRoute();
 const router = useRouter();
+const users = useUsersStore()
 
 const updateData = (data) => {
   emit('call_to_refresh', {page: route.query.page || 1, perPage: route.query.perPage || 10});
@@ -106,7 +108,7 @@ watch(() => route.query.searchKeyword, () => {
                 {{ item.name }}
               </th>
               <th
-                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment || answerQuestion"
+                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment || answerQuestion || cancelUpdateOrderStatus"
                   scope="col"
                   class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
                 <p>
@@ -115,11 +117,11 @@ watch(() => route.query.searchKeyword, () => {
               </th>
             </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 bg-white">
+            <tbody class="divide-y divide-gray-200 bg-white h-full">
             <tr
                 v-for="(item, index) in (Array.isArray(fetchedData?.data) && fetchedData?.data.length ? fetchedData.data.slice().reverse() : fetchedData?.slice?.().reverse())"
                 :key="index"
-                class="even:bg-gray-50 cursor-pointer">
+                class="even:bg-gray-50 cursor-pointer h-full">
               <td
                   v-for="(it, ind) in tableData"
                   :key="ind"
@@ -129,7 +131,8 @@ watch(() => route.query.searchKeyword, () => {
                 <p v-if="getNestedProperty(item, it.fn) && it.type === 'string' && it.name === 'Номер телефона'">
                   {{ formatPhoneNumber(getNestedProperty(item, it.fn)) }}
                 </p>
-                <p v-else-if="it.type === 'string' && getNestedProperty(item, it.fn)" v-html="getNestedProperty(item, it.fn)">
+                <p v-else-if="it.type === 'string' && getNestedProperty(item, it.fn)"
+                   v-html="getNestedProperty(item, it.fn)">
                 </p>
                 <p
                     v-else-if="it.type === 'string' && !getNestedProperty(item, it.fn)"
@@ -144,7 +147,7 @@ watch(() => route.query.searchKeyword, () => {
                         { 'bg-blue-100 text-blue-500' : item.status.code === 'in_process' },
                         { 'bg-emerald-100 text-emerald-500' : item.status.code === 'delivery' },
                         { 'bg-green-100 text-green-500' : item.status.code === 'delivered' },
-                        { 'bg-red-100 text-red-500' : item.status.code === 'cancelled' }
+                        { 'bg-red-100 text-red-500' : item.status.code === 'cancel' }
                     ]"
                     class="w-max px-4 py-2 rounded-xl capitalize"
                 >
@@ -243,8 +246,8 @@ watch(() => route.query.searchKeyword, () => {
                 </div>
               </td>
               <td
-                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment || answerQuestion"
-                  class="pl-4 py-5 whitespace-nowrap pr-4 text-right text-sm font-medium sm:pr-6 lg:pr-8 flex gap-1 relative z-20">
+                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment || answerQuestion || cancelUpdateOrderStatus"
+                  class="h-full whitespace-nowrap pr-4 text-right text-sm font-medium flex items-center gap-1">
                 <p
                     v-if="edit"
                     @click="emit('editValue', item)"
@@ -259,7 +262,7 @@ watch(() => route.query.searchKeyword, () => {
                   <XMarkIcon v-else class="w-5 h-5"/>
                 </p>
                 <p
-                    v-if="makeAdmin"
+                    v-if="makeAdmin && users.userProfile.role.code === 'admin'"
                     @click="emit('setAdmin', item)"
                     class="text-mainColor cursor-pointer w-max">
                   <UserPlusIcon v-if="!item[makeAdmin]" class="w-5 h-5"/>
@@ -278,7 +281,7 @@ watch(() => route.query.searchKeyword, () => {
                   <RectangleStackIcon class="w-5 h-5"/>
                 </p>
                 <p
-                    v-if="changePassword"
+                    v-if="changePassword && users.userProfile.role.code === 'admin'"
                     @click="emit('changePassword', item)"
                     class="text-mainColor cursor-pointer w-max">
                   <KeyIcon class="w-5 h-5"/>
@@ -292,8 +295,14 @@ watch(() => route.query.searchKeyword, () => {
                 <p
                     v-if="updateOrderStatus"
                     @click="emit('updateOrderStatus', item)"
-                    class="text-mainColor cursor-pointer w-max">
-                  <CheckIcon class="w-5 h-5"/>
+                    class="text-white bg-mainColor cursor-pointer w-max px-3 py-1 rounded-md">
+                  Смена статуса
+                </p>
+                <p
+                    v-if="cancelUpdateOrderStatus"
+                    @click="emit('cancelUpdateOrderStatus', item)"
+                    class="text-white bg-mainColor cursor-pointer w-max px-3 py-1 rounded-md">
+                  Отмена
                 </p>
                 <p
                     v-if="updateOrderPayment"
