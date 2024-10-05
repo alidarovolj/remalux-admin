@@ -30,7 +30,9 @@ import {
   TruckIcon,
   UsersIcon,
   WrenchScrewdriverIcon,
-  XMarkIcon
+  XMarkIcon,
+    SwatchIcon,
+    PaintBrushIcon
 } from '@heroicons/vue/24/outline';
 import {RouterLink, useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
@@ -42,6 +44,9 @@ const navigation = [
   {name: 'Главная', href: '/', icon: HomeIcon, alias: 'MainPage', section: "mainPage", children: []},
   {name: 'Пользователи', href: '/users', icon: UsersIcon, alias: 'Users', section: "users", children: []},
   {name: 'Заказы', href: '/orders', icon: TruckIcon, alias: 'Orders', section: "orders", children: []},
+  {name: 'Цвета', href: '/colors', icon: SwatchIcon, alias: 'Colors', section: "colors", children: [
+      {name: 'Группы', href: '/color-groups', icon: PaintBrushIcon, alias: 'ColorGroups', section: "colors", children: []},
+    ]},
   {
     name: 'Продукты', href: '/products', icon: FolderIcon, alias: 'Products', section: "products", children: [
       {

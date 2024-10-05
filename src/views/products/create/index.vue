@@ -1,8 +1,8 @@
 <script setup>
-import {onMounted, ref, watch} from "vue";
+import {nextTick, onMounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useVuelidate} from "@vuelidate/core";
-import {required, minLength} from "@vuelidate/validators";
+import {required} from "@vuelidate/validators";
 import {useProductsStore} from "@/stores/products.js";
 import {storeToRefs} from "pinia";
 import {QuillEditor} from '@vueup/vue-quill'
@@ -28,6 +28,26 @@ import UploadImage from "@/components/UploadImage.vue";
 
 const route = useRoute();
 const router = useRouter();
+
+const selected = ref(null)
+
+const updateRelatedProducts = (product) => {
+  if (product && !form.value.related_product_ids.includes(product.id)) {
+    form.value.related_product_ids.push(product.id);
+  }
+};
+
+// Remove related product
+const removeRelatedProduct = (index) => {
+  form.value.related_product_ids.splice(index, 1);
+};
+
+// Helper to get the product name by ID
+const getProductNameById = (id) => {
+  const product = products.productsList?.data?.find(p => p.id === id);
+  return product ? product.title.ru : 'Unknown Product';
+};
+
 
 const newElementsForm = ref([])
 const newElementForm = ref({
@@ -68,7 +88,8 @@ const form = ref({
   category_id: null,
   image_url: "",
   product_variants: [],
-  filter_data: []
+  filter_data: [],
+  related_product_ids: []
 });
 
 const v$ = useVuelidate({
@@ -190,6 +211,11 @@ const selectFilter = (index, value) => {
     form.value.filter_data.push(newElement);
   }
 };
+
+onMounted(async () => {
+  await nextTick()
+  await products.getProductsList()
+});
 </script>
 
 <template>
@@ -242,6 +268,80 @@ const selectFilter = (index, value) => {
                     class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     placeholder="1XE3241F"
                 />
+              </div>
+            </div>
+            <div
+                class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+              <label
+                  for="related-products"
+                  class="block text-xs font-medium text-gray-900">
+                С этим товаром покупают
+              </label>
+              <Listbox
+                  as="div"
+                  v-model="selected"
+                  @update:modelValue="updateRelatedProducts">
+                <div class="relative mt-2">
+                  <ListboxButton
+                      class="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                <span class="flex items-center">
+                  <span class="ml-3 block truncate">{{ selected?.name || 'Выберите товар' }}</span>
+                </span>
+                    <span class="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+                  <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true"/>
+                </span>
+                  </ListboxButton>
+
+                  <transition
+                      leave-active-class="transition ease-in duration-100"
+                      leave-from-class="opacity-100"
+                      leave-to-class="opacity-0">
+                    <ListboxOptions
+                        class="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                      <ListboxOption
+                          as="template"
+                          v-for="(item, index) in products.productsList?.data"
+                          :key="item.id"
+                          :value="item"
+                          v-slot="{ active, selected }">
+                        <li :class="[active ? 'bg-indigo-600 text-white' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-3 pr-9']">
+                          <div class="flex items-center">
+                            <img :src="item.image_url" alt="" class="h-5 w-5 flex-shrink-0 rounded-full"/>
+                            <span :class="[selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate']">
+                          {{ item.title.ru }}
+                        </span>
+                          </div>
+
+                          <span v-if="selected"
+                                :class="[active ? 'text-white' : 'text-indigo-600', 'absolute inset-y-0 right-0 flex items-center pr-4']">
+                        <CheckIcon class="h-5 w-5" aria-hidden="true"/>
+                      </span>
+                        </li>
+                      </ListboxOption>
+                    </ListboxOptions>
+                  </transition>
+                </div>
+              </Listbox>
+            </div>
+
+            <!-- Display selected related products -->
+            <div v-if="form.related_product_ids.length > 0" class="my-3 text-xs">
+              <p class="block font-medium text-gray-900">
+                Выбранные товары
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <div
+                    v-for="(productId, ind) of form.related_product_ids"
+                    :key="ind"
+                    class="flex items-center bg-gray-100 p-2 gap-1 rounded-md">
+                  <p>
+                    {{ getProductNameById(productId) }}
+                  </p>
+                  <XMarkIcon
+                      @click="removeRelatedProduct(ind)"
+                      class="w-5 h-5 text-red-500 cursor-pointer"
+                  />
+                </div>
               </div>
             </div>
             <div class="rounded-md px-3 pb-1.5 pt-2.5 border mb-3">

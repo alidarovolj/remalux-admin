@@ -11,6 +11,7 @@ import {
   UserPlusIcon,
   UsersIcon,
   XMarkIcon,
+  PlusIcon
 } from "@heroicons/vue/24/outline"
 import PaginationBlock from "@/components/PaginationBlock.vue";
 import {useRoute, useRouter} from "vue-router";
@@ -21,8 +22,8 @@ import {useUsersStore} from "@/stores/users.js";
 
 const searchValue = ref('')
 
-const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive', 'search', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment', 'link', 'answerQuestion', 'cancelUpdateOrderStatus']);
-const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem', 'setActive', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment', 'answerQuestion', 'cancelUpdateOrderStatus']);
+const props = defineProps(['tableData', 'fetchedData', 'edit', 'makeAdmin', 'changePassword', 'removeItem', 'setActive', 'search', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment', 'link', 'answerQuestion', 'cancelUpdateOrderStatus', 'addElement']);
+const emit = defineEmits(['call_to_refresh', 'editValue', 'setAdmin', 'changePassword', 'removeItem', 'setActive', 'changePrice', 'changeRemains', 'updateOrderStatus', 'updateOrderPayment', 'answerQuestion', 'cancelUpdateOrderStatus', 'addElement']);
 
 const route = useRoute();
 const router = useRouter();
@@ -108,7 +109,7 @@ watch(() => route.query.searchKeyword, () => {
                 {{ item.name }}
               </th>
               <th
-                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment || answerQuestion || cancelUpdateOrderStatus"
+                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment || answerQuestion || cancelUpdateOrderStatus || addElement"
                   scope="col"
                   class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">
                 <p>
@@ -186,6 +187,17 @@ watch(() => route.query.searchKeyword, () => {
                   </p>
                 </div>
                 <div
+                    v-else-if="it.type === 'color_array'"
+                    class="flex gap-1 flex-wrap text-xs">
+                  <p
+                      v-for="(arrItem, arrIndex) of getNestedProperty(item, it.fn)"
+                      :key="arrIndex"
+                      :style="{ color: arrItem.hex }"
+                  >
+                    {{ arrItem.title.ru }}
+                  </p>
+                </div>
+                <div
                     v-else-if="it.type === 'images_array'"
                     class="w-max flex gap-2">
                   <img
@@ -246,13 +258,19 @@ watch(() => route.query.searchKeyword, () => {
                 </div>
               </td>
               <td
-                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment || answerQuestion || cancelUpdateOrderStatus"
+                  v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment || answerQuestion || cancelUpdateOrderStatus || addElement"
                   class="h-full whitespace-nowrap pr-4 text-right text-sm font-medium flex items-center gap-1">
                 <p
                     v-if="edit"
                     @click="emit('editValue', item)"
                     class="text-mainColor cursor-pointer w-max">
                   <PencilSquareIcon class="w-5 h-5"/>
+                </p>
+                <p
+                    v-if="addElement"
+                    @click="emit('addElement', item)"
+                    class="text-mainColor cursor-pointer w-max">
+                  <PlusIcon class="w-5 h-5"/>
                 </p>
                 <p
                     v-if="setActive"

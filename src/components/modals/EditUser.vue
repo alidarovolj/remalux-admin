@@ -17,14 +17,14 @@ const formEdit = ref({
   name: "",
   phone_number: "",
   email: "",
-  role_code: null
+  role_id: null
 });
 
 const v$Edit = useVuelidate({
   name: {required},
   phone_number: {required, minLength: 11},
   email: {required, email},
-  role_code: {required}
+  role_id: {required}
 }, formEdit);
 
 const editUser = async () => {
@@ -56,7 +56,7 @@ onMounted(async () => {
   formEdit.value.name = modals.modal.modalData.name;
   formEdit.value.phone_number = modals.modal.modalData.phone_number;
   formEdit.value.email = modals.modal.modalData.email;
-  formEdit.value.role_code = modals.modal.modalData.role.code;
+  formEdit.value.role_id = modals.modal.modalData.role.code;
 })
 </script>
 
@@ -130,7 +130,7 @@ onMounted(async () => {
         Роль
       </label>
       <select
-          v-model="formEdit.role_code"
+          v-model="formEdit.role_id"
           class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 bg-white"
           name=""
           id="">
@@ -138,7 +138,7 @@ onMounted(async () => {
         <option
             v-for="(role, index) in users.rolesList"
             :key="index"
-            :value="role.code"
+            :value="role.id"
         >
           {{ role.name }}
         </option>

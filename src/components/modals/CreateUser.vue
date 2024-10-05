@@ -19,7 +19,7 @@ const form = ref({
   email: "",
   password: "",
   password_confirmation: "",
-  role_code: null
+  role_id: null
 });
 
 const v$ = useVuelidate({
@@ -28,7 +28,7 @@ const v$ = useVuelidate({
   email: {required, email},
   password: {required},
   password_confirmation: {required},
-  role_code: {required}
+  role_id: {required}
 }, form);
 
 const createUser = async () => {
@@ -132,7 +132,7 @@ onMounted(async () => {
           />
         </div>
         <div
-            :class="{ '!border !border-red-500': v$.role_code.$error }"
+            :class="{ '!border !border-red-500': v$.role_id.$error }"
             class="mb-2 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
           <label
               for="name"
@@ -140,7 +140,7 @@ onMounted(async () => {
             Роль
           </label>
           <select
-              v-model="form.role_code"
+              v-model="form.role_id"
               class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 bg-white"
               name=""
               id="">
@@ -148,7 +148,7 @@ onMounted(async () => {
             <option
                 v-for="(role, index) in users.rolesList"
                 :key="index"
-                :value="role.code"
+                :value="role.id"
             >
               {{ role.name }}
             </option>
