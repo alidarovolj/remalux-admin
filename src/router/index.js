@@ -29,6 +29,7 @@ import projectsView from "@/views/projects/index.vue";
 import productReviewsView from "@/views/products/reviews/index.vue";
 import colorsView from "@/views/colors/index.vue"
 import colorGroupsView from "@/views/colors/colorGroups/index.vue"
+import colorGroupsDetail from "@/views/colors/colorGroups/detail.vue"
 import {useUsersStore} from "@/stores/users.js";
 
 const routes = [
@@ -271,6 +272,15 @@ const routes = [
         path: '/color-groups',
         name: "ColorGroups",
         component: colorGroupsView,
+        meta: {
+            requiresAuth: true,
+            section: 'colorGroups',
+        }
+    },
+    {
+        path: '/color-groups/:id',
+        name: "ColorGroupsDetail",
+        component: colorGroupsDetail,
         meta: {
             requiresAuth: true,
             section: 'colorGroups',

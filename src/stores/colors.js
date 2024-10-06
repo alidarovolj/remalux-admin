@@ -3,6 +3,7 @@ import {ref} from "vue";
 import {useNotificationStore} from "@/stores/notifications.js";
 import {api} from "@/utils/axios.js";
 import {useRoute} from "vue-router";
+import axios from "axios";
 
 export const useColorsStore = defineStore("colors", () => {
     const colorsList = ref(null);
@@ -11,6 +12,8 @@ export const useColorsStore = defineStore("colors", () => {
     const detailColorGroup = ref(null);
     const addedToColorGroup = ref(null);
     const updatedColorGroup = ref(null);
+    const removedColorGroupColor = ref(null);
+    const token = ref(localStorage.getItem('token'));
     const notifications = useNotificationStore()
     const route = useRoute()
 
@@ -21,6 +24,7 @@ export const useColorsStore = defineStore("colors", () => {
         detailColorGroup,
         addedToColorGroup,
         updatedColorGroup,
+        removedColorGroupColor,
         async getColors(search) {
             try {
                 console.log(search)
@@ -82,6 +86,45 @@ export const useColorsStore = defineStore("colors", () => {
                 createdColorGroup.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
+            }
+        },
+        async removeColorGroupColor(id, colorId) {
+            try {
+                const response = await api(`/api/admin/groups/${id}/colors/${colorId}`, "DELETE", {}, {});
+
+                removedColorGroupColor.value = response;
+                notifications.showNotification("success", "Успешно", "Цвет удален из группы");
+            } catch (e) {
+                notifications.showNotification("error", "Произошла ошибка", e);
+            }
+        },
+        async downloadColors() {
+            try {
+                const response = await axios.get(import.meta.env.VITE_APP_BASE_URL + '/api/colors/download', {
+                    responseType: 'blob',
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token.value}`,
+                    }
+                });
+
+                const blob = new Blob([response.data], {
+                    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                });
+
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'colors.xlsx');
+                document.body.appendChild(link);
+                link.click();
+
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(link);
+
+                notifications.showNotification("success", "Файл успешно загружен");
+            } catch (e) {
+                notifications.showNotification("error", "Произошла ошибка при загрузке файла", e);
             }
         },
     };

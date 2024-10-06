@@ -16,8 +16,7 @@ const {colorGroupList} = storeToRefs(colors)
 
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
-  {name: "Название", fn: "name", type: "string"},
-  {name: "Цвета", fn: "colors", type: "color_array"}
+  {name: "Название", fn: "name", type: "string"}
 ])
 
 const page = ref(route.query.page || 1);
@@ -73,7 +72,7 @@ onMounted(fetchData);
           :remove-item="true"
           @editValue="(data) => modals.showModal('EditColorGroup', data)"
           @removeItem="(data) => modals.showModal('RemoveColorGroup', data)"
-          @addElement="(data) => modals.showModal('AddColorToColorGroup', data)"
+          @addElement="(data) => router.push({ path: `/color-groups/${data.id}` })"
       />
     </div>
   </div>

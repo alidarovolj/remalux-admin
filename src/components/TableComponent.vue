@@ -259,7 +259,7 @@ watch(() => route.query.searchKeyword, () => {
               </td>
               <td
                   v-if="edit || makeAdmin || changePassword || removeItem || setActive || changePrice || changeRemains || updateOrderStatus || updateOrderPayment || answerQuestion || cancelUpdateOrderStatus || addElement"
-                  class="h-full whitespace-nowrap pr-4 text-right text-sm font-medium flex items-center gap-1">
+                  class="h-full whitespace-nowrap py-3 pr-4 text-right text-sm font-medium flex items-center gap-1">
                 <p
                     v-if="edit"
                     @click="emit('editValue', item)"

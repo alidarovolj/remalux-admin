@@ -4,7 +4,6 @@ import {useRoute, useRouter} from "vue-router";
 import {storeToRefs} from "pinia";
 import {useModalsStore} from "@/stores/modals.js";
 import TableComponent from "@/components/TableComponent.vue";
-import {useContactsStore} from "@/stores/contacts.js";
 import {useColorsStore} from "@/stores/colors.js";
 
 const route = useRoute();
@@ -59,14 +58,14 @@ onMounted(fetchData);
             Список всех цветов в системе
           </p>
         </div>
-<!--        <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">-->
-<!--          <RouterLink-->
-<!--              to="/contacts/create"-->
-<!--              type="button"-->
-<!--              class="block rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">-->
-<!--            Добавить контакт-->
-<!--          </RouterLink>-->
-<!--        </div>-->
+        <div
+            @click="colors.downloadColors()"
+            class="cursor-pointer flex items-center gap-1 rounded-md bg-mainColor px-3 py-2 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
+          <img class="w-7 h-7" src="@/assets/img/logos/excel.png" alt="">
+          <p>
+            Скачать
+          </p>
+        </div>
       </div>
       <TableComponent
           :tableData="tableData"
