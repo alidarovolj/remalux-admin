@@ -13,6 +13,7 @@ export const useColorsStore = defineStore("colors", () => {
     const addedToColorGroup = ref(null);
     const updatedColorGroup = ref(null);
     const removedColorGroupColor = ref(null);
+    const editedColor = ref(null);
     const token = ref(localStorage.getItem('token'));
     const notifications = useNotificationStore()
     const route = useRoute()
@@ -25,6 +26,7 @@ export const useColorsStore = defineStore("colors", () => {
         addedToColorGroup,
         updatedColorGroup,
         removedColorGroupColor,
+        editedColor,
         async getColors(search) {
             try {
                 console.log(search)
@@ -94,6 +96,17 @@ export const useColorsStore = defineStore("colors", () => {
 
                 removedColorGroupColor.value = response;
                 notifications.showNotification("success", "Успешно", "Цвет удален из группы");
+            } catch (e) {
+                notifications.showNotification("error", "Произошла ошибка", e);
+            }
+        },
+        async editColor(id, form) {
+            try {
+                const response = await api(`/api/admin/colors/${id}`, "PUT", {
+                    body: JSON.stringify(form)
+                }, {});
+
+                editedColor.value = response;
             } catch (e) {
                 notifications.showNotification("error", "Произошла ошибка", e);
             }

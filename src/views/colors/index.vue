@@ -44,6 +44,12 @@ const fetchData = async () => {
 };
 
 onMounted(fetchData);
+
+watch([page, perPage], fetchData);
+
+watch(route.query, async () => {
+  await colors.getColors(route.query.page, route.query.perPage);
+});
 </script>
 
 <template>
@@ -71,6 +77,8 @@ onMounted(fetchData);
           :tableData="tableData"
           :fetchedData="colorsList"
           @call_to_refresh="fetchData"
+          :edit="true"
+          @editValue="(data) => modals.showModal('EditColor', data)"
       />
     </div>
   </div>

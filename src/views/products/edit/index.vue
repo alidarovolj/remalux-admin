@@ -61,7 +61,6 @@ const getProductNameById = (id) => {
 };
 
 
-
 const newElementsForm = ref([])
 const newElementForm = ref({
   filter_id: null,
@@ -329,7 +328,8 @@ onMounted(async () => {
                 />
               </div>
             </div>
-            <div class="flex items-center gap-3 mb-3 rounded-md px-3 py-3 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+            <div
+                class="flex items-center gap-3 mb-3 rounded-md px-3 py-3 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
               <label
                   for="colorable"
                   class="block text-xs font-medium text-gray-900">
@@ -345,7 +345,8 @@ onMounted(async () => {
                 />
               </div>
             </div>
-            <div class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+            <div
+                class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
               <label
                   for="color_group"
                   class="block text-xs font-medium text-gray-900 mb-2">
