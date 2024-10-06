@@ -24,6 +24,7 @@ import {
   ListboxOption,
   ListboxOptions
 } from "@headlessui/vue";
+import {useColorsStore} from "@/stores/colors.js";
 
 const route = useRoute();
 const router = useRouter();
@@ -82,6 +83,7 @@ const {categoriesList} = storeToRefs(categories)
 const filters = useFiltersStore()
 const {filtersListByCategory} = storeToRefs(filters)
 const notifications = useNotificationStore()
+const colors = useColorsStore()
 
 const form = ref({
   title: {
@@ -96,6 +98,8 @@ const form = ref({
   },
   article: "",
   category_id: null,
+  is_colorable: false,
+  group_id: null,
   image_url: "",
   product_variants: [],
   filter_data: [],
@@ -183,8 +187,11 @@ const editProduct = async () => {
 
 const fetchData = async () => {
   try {
+    await colors.getColorGroups()
     await products.detailProduct(route.params.id);
     form.value.title = products.detailProductResult.title;
+    form.value.is_colorable = products.detailProductResult.is_colorable;
+    form.value.group_id = products.detailProductResult.group.id;
     form.value.description = products.detailProductResult.description;
     form.value.image_url = products.detailProductResult.image_url;
     products.detailProductResult.product_variants.forEach(variant => {
@@ -320,6 +327,46 @@ onMounted(async () => {
                     class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     placeholder="1XE3241F"
                 />
+              </div>
+            </div>
+            <div class="flex items-center gap-3 mb-3 rounded-md px-3 py-3 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+              <label
+                  for="colorable"
+                  class="block text-xs font-medium text-gray-900">
+                Красящаяся
+              </label>
+              <div>
+                <input
+                    v-model="form.is_colorable"
+                    type="checkbox"
+                    name="colorable"
+                    id="colorable"
+                    class="block border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 w-5 h-5"
+                />
+              </div>
+            </div>
+            <div class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
+              <label
+                  for="color_group"
+                  class="block text-xs font-medium text-gray-900 mb-2">
+                Цветовая группа
+              </label>
+              <div class="flex gap-2">
+                <select
+                    v-model="form.group_id"
+                    name="color_group"
+                    id="color_group"
+                    class="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6"
+                >
+                  <option :value="null">Выберите группу</option>
+                  <option
+                      v-for="(item, index) of colors.colorGroupList?.data"
+                      :key="index"
+                      :value="item.id"
+                  >
+                    {{ item.name }}
+                  </option>
+                </select>
               </div>
             </div>
             <div

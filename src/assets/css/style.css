@@ -12,8 +12,8 @@ html {
 }
 
 .spinner {
-    width: 48px;
-    height: 48px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     display: inline-block;
     position: relative;
@@ -34,16 +34,16 @@ html {
     margin: auto;
     border: 3px solid;
     border-color: transparent transparent #9b2823 #9b2823;
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     box-sizing: border-box;
     animation: rotationBack 0.5s linear infinite;
     transform-origin: center center;
 }
 .spinner::before {
-    width: 32px;
-    height: 32px;
+    width: 16px;
+    height: 16px;
     border-color: #FFF #FFF transparent transparent;
     animation: rotation 1.5s linear infinite;
 }

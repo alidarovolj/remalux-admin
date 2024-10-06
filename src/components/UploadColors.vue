@@ -43,10 +43,16 @@ const uploadFile = async () => {
 <template>
   <div class="h-full">
     <button
+        v-if="!isLoading"
         @click="triggerFileUpload"
         class="block bg-mainColor py-3 px-2 rounded-md text-sm text-white font-semibold">
       Импортировать
     </button>
+    <p
+        v-else
+        class="bg-mainColor py-3 rounded-md text-sm text-white font-semibold flex items-center justify-center px-5">
+      <span class="spinner"></span>
+    </p>
     <input
         type="file"
         id="fileUpload"
