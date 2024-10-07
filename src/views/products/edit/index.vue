@@ -190,7 +190,9 @@ const fetchData = async () => {
     await products.detailProduct(route.params.id);
     form.value.title = products.detailProductResult.title;
     form.value.is_colorable = products.detailProductResult.is_colorable;
-    form.value.group_id = products.detailProductResult.group.id;
+    if(form.value.is_colorable) {
+      form.value.group_id = products.detailProductResult.group.id;
+    }
     form.value.description = products.detailProductResult.description;
     form.value.image_url = products.detailProductResult.image_url;
     products.detailProductResult.product_variants.forEach(variant => {
@@ -346,6 +348,7 @@ onMounted(async () => {
               </div>
             </div>
             <div
+                v-if="form.is_colorable"
                 class="mb-3 rounded-md px-3 pb-1.5 pt-2.5 shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-indigo-600">
               <label
                   for="color_group"

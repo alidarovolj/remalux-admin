@@ -1,18 +1,90 @@
 <script setup>
-import {PlusSmallIcon} from '@heroicons/vue/20/solid'
+import { PlusSmallIcon } from '@heroicons/vue/20/solid';
+import { useAnalyticsStore } from "@/stores/analytics.js";
+import { nextTick, onMounted, ref, computed } from "vue";
+import {storeToRefs} from "pinia";
 
-const secondaryNavigation = [
-  {name: 'Последние 7 дней', href: '#', current: true},
-  {name: 'Последние 30 дней', href: '#', current: false},
-  {name: 'За все время', href: '#', current: false},
-]
+// Function to format date as 'YYYY-MM-DD'
+function formatDate(date) {
+  return date.toISOString().split('T')[0];
+}
 
-const stats = [
-  {name: 'Доход', value: '$405,091.00', change: '+4.75%', changeType: 'positive'},
-  {name: 'Просроченные счета', value: '$12,787.00', change: '+54.02%', changeType: 'negative'},
-  {name: 'Неоплаченные счета', value: '$245,988.00', change: '-1.39%', changeType: 'positive'},
-  {name: 'Затраты', value: '$30,156.00', change: '+10.18%', changeType: 'negative'},
-]
+// Set the initial dates (last 7 days)
+const dates = ref({
+  from: formatDate(new Date(new Date().setDate(new Date().getDate() - 7))),
+  to: formatDate(new Date())
+});
+
+const analytics = useAnalyticsStore();
+const {analyticsList} = storeToRefs(analytics);
+
+// Secondary navigation options
+const secondaryNavigation = ref([
+  { name: 'Последние 7 дней', href: '#', current: true, action: 'last7days' },
+  { name: 'Последние 30 дней', href: '#', current: false, action: 'last30days' },
+  { name: 'Последние 3 месяца', href: '#', current: false, action: 'last3months' },
+]);
+
+// Fetch analytics data and handle date range changes
+async function setDateRange(range) {
+  const currentDate = new Date();
+
+  if (range === 'last7days') {
+    dates.value.from = formatDate(new Date(currentDate.setDate(currentDate.getDate() - 7)));
+  } else if (range === 'last30days') {
+    dates.value.from = formatDate(new Date(currentDate.setDate(currentDate.getDate() - 30)));
+  } else if (range === 'last3months') {
+    dates.value.from = formatDate(new Date(currentDate.setMonth(currentDate.getMonth() - 3)));
+  }
+
+  dates.value.to = formatDate(new Date()); // Always set 'to' to today
+
+  // Update current selection in secondary navigation
+  secondaryNavigation.value.forEach(item => {
+    item.current = item.action === range;  // Set current to true for the selected range
+  });
+
+  // Fetch updated analytics list after changing the date range
+  await nextTick();
+  await analytics.getAnalyticsList(dates.value);
+}
+
+onMounted(async () => {
+  await nextTick();
+  await analytics.getAnalyticsList(dates.value);
+});
+
+// Compute stats based on the current analytics list, add checks for null/undefined
+const stats = computed(() => {
+  if (!analyticsList.value) {
+    // If analyticsList is null or undefined, return default values
+    return {
+      orders: {pending: 0, paid: 0, in_delivery: 0, delivery: 0, delivered: 0, in_process: 0, cancel: 0, total: 0},
+      sold_products: {amount: '0.00', quantity: 0},
+      users: 0,
+    };
+  }
+
+  // If analyticsList is present, return the real data
+  const orders = analyticsList.value.orders || {
+    pending: 0,
+    paid: 0,
+    in_delivery: 0,
+    delivery: 0,
+    delivered: 0,
+    in_process: 0,
+    cancel: 0,
+    total: 0
+  };
+  const soldProducts = analyticsList.value.sold_products || {amount: '0.00', quantity: 0};
+  const users = analyticsList.value.users || 0;
+
+  return {
+    orders,
+    sold_products: soldProducts,
+    users,
+  };
+});
 </script>
 
 <template>
@@ -21,11 +93,12 @@ const stats = [
       <!-- Secondary navigation -->
       <header class="pb-4 pt-6 sm:pb-6">
         <div class="flex w-full flex-wrap items-center gap-6 px-4 sm:flex-nowrap sm:px-6 lg:px-8">
-          <h1 class="text-base font-semibold leading-7 text-gray-900">Денежный поток</h1>
+          <h1 class="text-base font-semibold leading-7 text-gray-900">Поток заказов</h1>
           <div
               class="order-last flex w-full gap-x-8 text-sm font-semibold leading-6 sm:order-none sm:w-auto sm:border-l sm:border-gray-200 sm:pl-6 sm:leading-7">
             <a v-for="item in secondaryNavigation" :key="item.name" :href="item.href"
-               :class="item.current ? 'text-mainColor' : 'text-gray-700'">{{ item.name }}</a>
+               :class="item.current ? 'text-mainColor' : 'text-gray-700'"
+               @click.prevent="setDateRange(item.action)">{{ item.name }}</a>
           </div>
           <a href="#"
              class="ml-auto flex items-center gap-x-1 rounded-md bg-mainColor px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mainColor">
@@ -38,14 +111,39 @@ const stats = [
       <!-- Stats -->
       <div class="border-b border-b-gray-900/10 lg:border-t lg:border-t-gray-900/5">
         <dl class="grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:px-2 xl:px-0">
-          <div v-for="(stat, statIdx) in stats" :key="stat.name"
-               :class="[statIdx % 2 === 1 ? 'sm:border-l' : statIdx === 2 ? 'lg:border-l' : '', 'flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 border-t border-gray-900/5 px-4 py-10 sm:px-6 lg:border-t-0 xl:px-8']">
-            <dt class="text-sm font-medium leading-6 text-gray-500">{{ stat.name }}</dt>
-            <dd :class="[stat.changeType === 'negative' ? 'text-rose-600' : 'text-gray-700', 'text-xs font-medium']">
-              {{ stat.change }}
+          <!-- Total Orders -->
+          <div
+              class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 border-t border-gray-900/5 px-4 py-10 sm:px-6 lg:border-t-0 xl:px-8">
+            <dt class="text-sm font-medium leading-6 text-gray-500">Всего заказов</dt>
+            <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">
+              {{ stats.orders.total }}
             </dd>
+          </div>
+
+          <!-- Sold Products Amount -->
+          <div
+              class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 border-t border-gray-900/5 px-4 py-10 sm:px-6 lg:border-t-0 xl:px-8">
+            <dt class="text-sm font-medium leading-6 text-gray-500">Сумма проданных товаров</dt>
+            <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">
+              {{ stats.sold_products.amount }}
+            </dd>
+          </div>
+
+          <!-- Sold Products Quantity -->
+          <div
+              class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 border-t border-gray-900/5 px-4 py-10 sm:px-6 lg:border-t-0 xl:px-8">
+            <dt class="text-sm font-medium leading-6 text-gray-500">Количество проданных товаров</dt>
+            <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">
+              {{ stats.sold_products.quantity }}
+            </dd>
+          </div>
+
+          <!-- Total Users -->
+          <div
+              class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 border-t border-gray-900/5 px-4 py-10 sm:px-6 lg:border-t-0 xl:px-8">
+            <dt class="text-sm font-medium leading-6 text-gray-500">Пользователи</dt>
             <dd class="w-full flex-none text-3xl font-medium leading-10 tracking-tight text-gray-900">{{
-                stat.value
+                stats.users
               }}
             </dd>
           </div>
