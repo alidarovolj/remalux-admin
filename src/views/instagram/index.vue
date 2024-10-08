@@ -3,7 +3,6 @@ import {onMounted, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useInstagramStore} from "@/stores/instagram.js";
 import {storeToRefs} from "pinia";
-import {useModalsStore} from "@/stores/modals.js";
 import TableComponent from "@/components/TableComponent.vue";
 
 const route = useRoute();
@@ -15,9 +14,9 @@ const {list} = storeToRefs(posts);
 const tableData = ref([
   {name: "ID", fn: "id", type: "string"},
   {name: "Название", fn: "title", type: "string"},
-  {name: "Контент", fn: "content", type: "string"},
   {name: "Картинка", fn: "image_url", type: "image"},
-  {name: "Ссылка", fn: "url", type: "string"}
+  {name: "Ссылка", fn: "url", type: "string"},
+  {name: "Контент", fn: "content", type: "string"}
 ]);
 
 const page = ref(route.query.page || 1);
