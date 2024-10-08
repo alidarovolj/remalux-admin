@@ -100,11 +100,6 @@ const stats = computed(() => {
                :class="item.current ? 'text-mainColor' : 'text-gray-700'"
                @click.prevent="setDateRange(item.action)">{{ item.name }}</a>
           </div>
-          <a href="#"
-             class="ml-auto flex items-center gap-x-1 rounded-md bg-mainColor px-3 py-2 text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-mainColor">
-            <PlusSmallIcon class="-ml-1.5 h-5 w-5" aria-hidden="true"/>
-            Новый счет
-          </a>
         </div>
       </header>
 
