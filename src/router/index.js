@@ -30,6 +30,7 @@ import productReviewsView from "@/views/products/reviews/index.vue";
 import colorsView from "@/views/colors/index.vue"
 import colorGroupsView from "@/views/colors/colorGroups/index.vue"
 import colorGroupsDetail from "@/views/colors/colorGroups/detail.vue"
+import instagramView from '@/views/instagram/index.vue'
 import {useUsersStore} from "@/stores/users.js";
 
 const routes = [
@@ -293,6 +294,15 @@ const routes = [
         meta: {
             requiresAuth: true,
             section: 'news',
+        }
+    },
+    {
+        path: '/instagram',
+        name: "Instagram",
+        component: instagramView,
+        meta: {
+            requiresAuth: true,
+            section: 'instagram',
         }
     },
 ]

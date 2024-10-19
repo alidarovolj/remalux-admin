@@ -265,7 +265,7 @@ onBeforeUnmount(() => {
           </label>
           <textarea
               v-model="form.note"
-              type="number"
+              type="text"
               name="name"
               id="name"
               class="block w-full border-0 p-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"

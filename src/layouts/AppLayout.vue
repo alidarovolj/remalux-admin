@@ -31,8 +31,9 @@ import {
   UsersIcon,
   WrenchScrewdriverIcon,
   XMarkIcon,
-    SwatchIcon,
-    PaintBrushIcon
+  SwatchIcon,
+  PaintBrushIcon,
+  DevicePhoneMobileIcon
 } from '@heroicons/vue/24/outline';
 import {RouterLink, useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
@@ -44,9 +45,18 @@ const navigation = [
   {name: 'Главная', href: '/', icon: HomeIcon, alias: 'MainPage', section: "mainPage", children: []},
   {name: 'Пользователи', href: '/users', icon: UsersIcon, alias: 'Users', section: "users", children: []},
   {name: 'Заказы', href: '/orders', icon: TruckIcon, alias: 'Orders', section: "orders", children: []},
-  {name: 'Цвета', href: '/colors', icon: SwatchIcon, alias: 'Colors', section: "colors", children: [
-      {name: 'Группы', href: '/color-groups', icon: PaintBrushIcon, alias: 'ColorGroups', section: "colors", children: []},
-    ]},
+  {
+    name: 'Цвета', href: '/colors', icon: SwatchIcon, alias: 'Colors', section: "colors", children: [
+      {
+        name: 'Группы',
+        href: '/color-groups',
+        icon: PaintBrushIcon,
+        alias: 'ColorGroups',
+        section: "colors",
+        children: []
+      },
+    ]
+  },
   {
     name: 'Продукты', href: '/products', icon: FolderIcon, alias: 'Products', section: "products", children: [
       {
@@ -100,6 +110,7 @@ const navigation = [
     section: "projects",
     children: []
   },
+  {name: 'Инстаграм', href: '/instagram', icon: DevicePhoneMobileIcon, alias: 'Instagram', section: "instagram", children: []},
   {name: 'Контакты', href: '/contacts', icon: HomeModernIcon, alias: 'Contacts', section: "contacts", children: []},
 ]
 
@@ -116,7 +127,6 @@ const filteredLinks = computed(() => {
       return navigation;
     } else {
       return navigation.filter(item => {
-        // Check if the user has access to the main section or any child sections
         return sections.includes(item.section) || item.children.some(child => sections.includes(child.section));
       });
     }

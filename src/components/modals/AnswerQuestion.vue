@@ -37,7 +37,7 @@ const answerQuestion = async () => {
   try {
     await questions.answerQuestion(modals.modal.modalData.id, form.value);
     if (questions.answeredQuestion) {
-      notifications.showNotification("success", "Пароль пользователя успешно изменен!", "Теперь пользователь сможет войти в систему с новым паролем.");
+      notifications.showNotification("success", "Успешно", "Вопрос успешно отвечен");
       await questions.getQuestions()
       modals.modal.show = false;
     }

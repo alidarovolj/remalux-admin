@@ -17,8 +17,8 @@ const modals = useModalsStore()
 const tableData = ref([
   {name: "Фото", fn: "product_image", type: "image"},
   {name: "Название", fn: "product_name.ru", type: "string"},
-  {name: "Количество", fn: "quantity", type: "boolean"},
-  {name: "Цена", fn: "price", type: "string"}
+  {name: "Количество", fn: "quantity", type: "string"},
+  {name: "Цена", fn: "price", type: "string"},
 ])
 
 onMounted(async () => {
@@ -117,18 +117,6 @@ onMounted(async () => {
                 <div>
                   <div class="flex items-center justify-between font-semibold">
                     <p class="font-bold text-mainColor">Список продуктов:</p>
-                    <p
-                        v-if="ordersDetail.is_paid"
-                        class="text-green-600 px-4 py-2 bg-green-100 rounded-lg"
-                    >
-                      Оплачен
-                    </p>
-                    <p
-                        v-else
-                        class="text-red-600 px-4 py-2 bg-red-100 rounded-lg"
-                    >
-                      Не оплачен
-                    </p>
                   </div>
                   <TableComponent
                       :tableData="tableData"
