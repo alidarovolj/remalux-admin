@@ -1,5 +1,16 @@
 <script setup>
 import {PlusSmallIcon} from '@heroicons/vue/20/solid'
+import {useAnalyticsStore} from "@/stores/analytics.js";
+import {storeToRefs} from "pinia";
+import {nextTick, onMounted, ref} from "vue";
+
+const analytics = useAnalyticsStore()
+const {analyticsList} = storeToRefs(analytics)
+
+const dates = ref({
+  from: '2024-01-01',
+  to: '2025-01-01'
+})
 
 const secondaryNavigation = [
   {name: 'Последние 7 дней', href: '#', current: true},
@@ -13,6 +24,24 @@ const stats = [
   {name: 'Неоплаченные счета', value: '$245,988.00', change: '-1.39%', changeType: 'positive'},
   {name: 'Затраты', value: '$30,156.00', change: '+10.18%', changeType: 'negative'},
 ]
+
+onMounted(async () => {
+  await nextTick()
+  await analytics.getAnalyticsList(dates.value)
+
+  analyticsList.orders?.forEach((order) => {
+    const randomChange = (Math.random() * 10).toFixed(2) + "%";
+    const randomChangeType = Math.random() > 0.5 ? 'positive' : 'negative';
+
+    stats.push({
+      name: order.name || 'Unnamed',
+      value: order.value || '0',
+      change: randomChange,
+      changeType: randomChangeType,
+    })
+  })
+})
+
 </script>
 
 <template>

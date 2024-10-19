@@ -11,9 +11,9 @@ export const useAnalyticsStore = defineStore('analytics', () => {
 
     return {
         analyticsList,
-        async getAnalyticsList() {
+        async getAnalyticsList(setQuery) {
             try {
-                const response = await api(`/api/admin/analytics`, "GET", {}, route.query);
+                const response = await api(`/api/admin/analytics`, "GET", {}, setQuery);
 
                 analyticsList.value = response;
             } catch (e) {
